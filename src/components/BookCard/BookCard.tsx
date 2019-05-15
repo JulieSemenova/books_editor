@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
+import { Author } from '../../types';
 import Button from '../Button/Button';
 import './BookCard.css';
 
@@ -15,27 +16,25 @@ interface Props extends RouteComponentProps {
   img?: string;
 }
 
-type Author = {
-  name: string;
-  surname: string;
-};
-
 class BookCard extends React.Component<Props> {
   handleGoTo = (e: React.MouseEvent<HTMLElement>) => {
     this.props.history.push(`/${this.props.id}`);
   };
 
   render() {
-    const { id, title, authors, pages, img } = this.props;
+    const { title, authors, pages, img } = this.props;
     return (
       <article
         className="bookCard"
         onClick={(e: React.MouseEvent<HTMLElement>) => this.handleGoTo(e)}
       >
         {img ? (
-          <img className="bookCard_img" src={img} />
+          <img alt={`${title}`} className="bookCard_img" src={img} />
         ) : (
-          <img src="http://dummyimage.com/60x120/c0c0c0.gif&text=Empty" />
+          <img
+            alt={'Изображение обложки'}
+            src="http://dummyimage.com/60x120/c0c0c0.gif&text=Empty"
+          />
         )}
         <h2 className="bookCard_title">{title}</h2>
         <div className="bookCard_author">
