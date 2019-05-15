@@ -9,9 +9,10 @@ interface State {
 
 interface Props {
   onChange: React.ChangeEventHandler<any>;
-  value: string;
-  label?: string;
+  value: string | undefined;
+  dataType: 'number' | 'letters' | 'regexp';
   name: string;
+  label?: string;
   validateMax?: number;
   validateMin?: number;
   validateLength?: number;
@@ -42,32 +43,52 @@ class Input extends React.PureComponent<Props, State> {
   };
 
   checkValidation = () => {
-    const { required, validateLength, validateMax, validateMin, validateFormat } = this.props;
+    const {
+      required,
+      validateLength,
+      validateMax,
+      validateMin,
+      validateFormat,
+      dataType,
+    } = this.props;
     const { value } = this.state;
-    const valueLength = value.length;
-    const valueAmount = Number(value);
-    if (required && valueLength === 0) {
+    if (required && !value) {
       this.setState({ isValid: false });
     }
-    if (validateLength && valueLength <= valueLength) {
-      this.setState({ isValid: false });
-    }
-    if (validateMax && valueAmount > validateMax) {
-      this.setState({ isValid: false });
-    }
-    if (validateMin && valueAmount < validateMin) {
-      this.setState({ isValid: false });
+    if (dataType === 'letters') {
+      const valueLength = value.length;
+      if (validateLength && valueLength > validateLength) {
+        this.setState({ isValid: false });
+      }
     }
 
-    if (validateFormat && !validateFormat.test(value)) {
-      this.setState({ isValid: false });
+    if (dataType === 'number') {
+      const digits = /[0-9]/;
+      console.log(value);
+      if (value !== '') {
+        if (!digits.test(value)) {
+          this.setState({ isValid: false });
+        }
+        if (validateMax && +value > validateMax) {
+          this.setState({ isValid: false });
+        }
+        if (validateMin && +value < validateMin) {
+          this.setState({ isValid: false });
+        }
+      }
+    }
+
+    if (dataType === 'regexp') {
+      if (validateFormat && value && !validateFormat.test(value)) {
+        this.setState({ isValid: false });
+      }
     }
   };
 
   render() {
     const { value, label, name } = this.props;
     return (
-      <div className={`input_container? `}>
+      <div className="input_container">
         <label htmlFor={name}>{label}:</label>
         <input
           className={`input  ${!this.state.isValid ? 'input_error' : ''}`}

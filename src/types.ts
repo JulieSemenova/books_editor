@@ -6,9 +6,9 @@ export type Author = {
 export type Book = {
   title: string;
   authors: Author[];
-  pages: number;
+  pages: string;
   publisher?: string;
-  publicationDate?: number;
+  publicationYear?: string;
   editionDate?: string;
   ISBN?: string;
   img?: any;
