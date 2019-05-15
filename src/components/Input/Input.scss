@@ -1,0 +1,27 @@
+@import '../../styles/vars.scss';
+
+.input {
+  display: block;
+  padding: 0 $d_tiny;
+  border: 2px rgba($c_main, 0.3) solid;
+  font-size: $fs_normal;
+
+  &:focus {
+    border-color: $c_info;
+    outline: none;
+  }
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &_error {
+    border-color: $c_warn;
+  }
+
+  &_label {
+    display: block;
+    margin-top: $d_tiny;
+  }
+}
