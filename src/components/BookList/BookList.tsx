@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import BookCard from '../../components/BookCard/BookCard';
+import BookCard from '../BookCard/BookCard';
+import './BookList.css';
 
-class BooksCatalog extends Component {
+class BookList extends Component {
   render() {
     return (
-      <div>
-        BooksCatalog
+      <div className="bookList">
         <BookCard
           id={'id'}
           title="title"
@@ -18,4 +18,4 @@ class BooksCatalog extends Component {
   }
 }
 
-export default BooksCatalog;
+export default BookList;
