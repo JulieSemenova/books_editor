@@ -8,6 +8,11 @@
   padding: 20px;
   background-color: palevioletred;
 
+  transition-property: background-color;
+  transition-timing-function: $easing;
+  transition-duration: $duration;
+  cursor: pointer;
+
   &_img {
     object-fit: contain;
   }
@@ -16,5 +21,9 @@
     display: flex;
     justify-content: space-between;
     margin-top: auto;
+  }
+
+  &:hover {
+    background-color: tan;
   }
 }
