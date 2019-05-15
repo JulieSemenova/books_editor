@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 
 import MainPage from '../src/pages/MainPage/MainPage';
 import store from './redux/store';
+import './styles/index.css';
 
 const mountPoint = document.getElementById('root') as HTMLElement;
 
