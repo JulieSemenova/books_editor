@@ -1,0 +1,20 @@
+@import './vars.scss';
+
+body {
+  min-width: 320px;
+  margin: 0;
+
+  font-family: 'Open Sans', 'Verdana', sans-serif;
+  color: $c_main;
+  font-size: $fs_normal;
+  font-weight: $fw_regular;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+* {
+  box-sizing: border-box;
+}

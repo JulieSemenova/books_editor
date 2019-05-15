@@ -1,7 +1,23 @@
-// FONT FAMILY
+// COLORS
+$c_main: #000000;
+$c_contrast: #ffffff;
+$c_warn: #ff0638;
+$c_success: #81e61b;
+$c_primary: #01428a;
+$c_secondary: #102540;
 
 // FONT SIZES
+$fs_normal: 12px;
+$fs_xnormal: 14px;
+$fs_medium: 16px;
+$fs_big: 20px;
 
 // FONT WEIGHTS
+$fw_regular: 400;
+$fw_bold: 700;
 
-// ANIMATION
+// BREAKPOINTS
+$lg: 1200px;
+$md: 960px;
+$sm: 720px;
+$xs: 480px;
