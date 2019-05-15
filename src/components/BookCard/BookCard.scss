@@ -1,0 +1,20 @@
+@import '../../styles/vars.scss';
+.bookCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 300px;
+  width: 200px;
+  padding: 20px;
+  background-color: palevioletred;
+
+  &_img {
+    object-fit: contain;
+  }
+
+  &_buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+}

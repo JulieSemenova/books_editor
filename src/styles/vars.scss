@@ -3,8 +3,8 @@ $c_main: #000000;
 $c_contrast: #ffffff;
 $c_warn: #ff0638;
 $c_success: #81e61b;
-$c_primary: #01428a;
-$c_secondary: #102540;
+$c_primary: #91b7e2;
+$c_secondary: #818c9b;
 
 // FONT SIZES
 $fs_normal: 12px;
@@ -21,3 +21,7 @@ $lg: 1200px;
 $md: 960px;
 $sm: 720px;
 $xs: 480px;
+
+// ANIMATION
+$easing: ease;
+$duration: 0.1s;
