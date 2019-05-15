@@ -1,26 +1,5 @@
 @import '../../styles/vars.scss';
 
 .catalogPage {
-  margin: 0 auto;
-  height: 100vh;
-  max-width: 320px;
-  padding: 0 20px;
   background-color: papayawhip;
-
-  @media (min-width: $xs) {
-    padding: 0 40px;
-    max-width: $xs;
-  }
-
-  @media (min-width: $sm) {
-    max-width: $sm;
-  }
-
-  @media (min-width: $md) {
-    max-width: $sm;
-  }
-
-  @media (min-width: $lg) {
-    max-width: $lg;
-  }
 }

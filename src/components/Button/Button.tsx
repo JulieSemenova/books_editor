@@ -5,9 +5,8 @@ interface Props {
   className?: string;
   title?: string;
   children?: React.ReactNode;
-  onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
-  tooltip?: string;
 }
 
 const Button: React.StatelessComponent<Props> = ({
@@ -16,7 +15,6 @@ const Button: React.StatelessComponent<Props> = ({
   title,
   className,
   disabled,
-  tooltip,
 }: Props): JSX.Element => {
   const combinedClassName = ['button'];
 
