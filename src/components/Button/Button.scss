@@ -4,17 +4,14 @@
   padding: $d_small;
   text-align: center;
 
-  border-radius: 2px;
-  border: unset;
-
   font-size: $fs_normal;
   font-weight: $fw_regular;
-  color: $c_contrast;
   cursor: pointer;
-  background-color: $c_primary;
+  background-color: $c_contrast;
+  border-color: $c_secondary;
+  border-radius: $d_tiny;
 
-  box-shadow: 0 1px 2px 0 #020e1e;
-  transition-property: background-color, box-shadow;
+  transition-property: background-color;
   transition-timing-function: $easing;
   transition-duration: $duration;
 
@@ -25,13 +22,22 @@
   }
 
   &:disabled {
-    background-color: rgba($c_primary, 0.32);
+    background-color: #f5f5f5;
+    color: rgba($c_contrast, 0.32);
     cursor: default;
   }
 
-  &:active,
-  &:disabled {
-    box-shadow: unset;
+  &--primary {
+    background-color: $c_primary;
+    border-color: $c_primary;
+    color: $c_contrast;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($c_primary, 0.8);
+      border-color: rgba($c_primary, 0.8);
+    }
   }
 
   &--small {

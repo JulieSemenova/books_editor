@@ -8,4 +8,11 @@
       align-items: flex-end;
     }
   }
+
+  &_buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: $d_normal;
+  }
 }

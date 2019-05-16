@@ -35,7 +35,9 @@ class AddBookForm extends Component<{}, State> {
     this.setState({ ...this.state, authors: authorsNew });
   };
 
-  private addAuthor = () => {
+  private addAuthor = (e: any) => {
+    e.preventDefault();
+
     const author = {
       name: '',
       surname: '',
@@ -47,7 +49,8 @@ class AddBookForm extends Component<{}, State> {
     });
   };
 
-  private removeAuthor = (deletedIndex: number) => {
+  private removeAuthor = (e: any, deletedIndex: number) => {
+    e.preventDefault();
     const newAuthorList = this.state.authors.filter(
       (author: Author, index: number) => index !== deletedIndex,
     );
@@ -62,7 +65,7 @@ class AddBookForm extends Component<{}, State> {
     const { title, authors, pages, publisher, publicationYear, editionDate, ISBN } = this.state;
 
     return (
-      <div>
+      <form>
         <Input
           label="Заголовок"
           name="title"
@@ -75,7 +78,7 @@ class AddBookForm extends Component<{}, State> {
         <div>
           <div>
             Авторы
-            <Button title="+ автора" size="small" onClick={this.addAuthor} />
+            <Button title="+ автора" size="small" onClick={(e: any) => this.addAuthor(e)} />
           </div>
           {authors.map((author: Author, index: number) => {
             return (
@@ -99,7 +102,7 @@ class AddBookForm extends Component<{}, State> {
                   onChange={this.handleChangeAuthor('surname', index)}
                 />
                 {authors.length !== 1 && (
-                  <Button title="🗑️" size="small" onClick={() => this.removeAuthor(index)} />
+                  <Button title="✖️" size="small" onClick={e => this.removeAuthor(e, index)} />
                 )}
               </div>
             );
@@ -147,7 +150,11 @@ class AddBookForm extends Component<{}, State> {
           validateFormat={fullYearValudate}
           onChange={this.handleChange('ISBN')}
         />
-      </div>
+        <div className="form_buttons">
+          <Button title="Отмена" onClick={(e: any) => e.preventDefault()} />
+          <Button title="Добавить" type="primary" onClick={(e: any) => e.preventDefault()} />
+        </div>
+      </form>
     );
   }
 }
