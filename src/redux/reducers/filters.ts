@@ -1,5 +1,4 @@
-import { Filters } from '../../types/Filters.types';
-import { Action } from '../../types';
+import { Filters, Action } from '../../types';
 
 export const TOGGLE: string = 'filters/TOGGLE';
 export const CLEAR: string = 'filters/CLEAR';
