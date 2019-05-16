@@ -1,0 +1,11 @@
+@import '../../styles/vars.scss';
+.form {
+  &_item {
+    width: 200px;
+    &--author {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+  }
+}

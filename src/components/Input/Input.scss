@@ -2,18 +2,21 @@
 
 .input {
   display: block;
+  height: $d_xnormal;
   padding: 0 $d_tiny;
   border: 2px rgba($c_main, 0.3) solid;
   font-size: $fs_normal;
+  cursor: pointer;
 
   &:focus {
     border-color: $c_info;
     outline: none;
   }
+  &:hover {
+    border-color: rgba($c_main, 0.5);
+  }
 
   &_container {
-    display: flex;
-    flex-direction: column;
   }
 
   &_error {

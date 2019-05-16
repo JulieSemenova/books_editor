@@ -11,7 +11,7 @@ class BookList extends Component {
           id={'id'}
           title="title"
           authors={[{ name: 'name', surname: 'surname' }]}
-          pages={200}
+          pages="200"
         />
       </div>
     );

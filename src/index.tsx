@@ -16,7 +16,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={CatalogPage} />
-        <Route exact path="/:id" component={BookPage} />
+        <Route path="/:id" component={BookPage} />
       </Switch>
     </BrowserRouter>
   </Provider>,
