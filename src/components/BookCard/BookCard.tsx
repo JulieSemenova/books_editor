@@ -31,13 +31,13 @@ class BookCard extends React.Component<Props> {
             />
           )}
         </div>
-
         <h2 className="bookCard_title">{title}</h2>
         <div className="bookCard_author">
-          Авторы:
+          <span>Авторы:</span>
           {authors.map((author: Author) => (
             <p key={author.name}>
               {author.surname} {author.name}
+              {authors.length > 1 ? ',' : null}
             </p>
           ))}
         </div>

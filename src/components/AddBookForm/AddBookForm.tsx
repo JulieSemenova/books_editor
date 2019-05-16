@@ -34,7 +34,7 @@ class AddBookForm extends Component<{}, State> {
     this.setState({ ...this.state, authors: authorsNew });
   };
 
-  private addAnotherAuthor = () => {
+  private addAuthor = () => {
     const author = {
       name: '',
       surname: '',
@@ -43,6 +43,17 @@ class AddBookForm extends Component<{}, State> {
     this.setState({
       ...this.state,
       authors: this.state.authors.concat(author),
+    });
+  };
+
+  private removeAuthor = (deletedIndex: number) => {
+    const newAuthorList = this.state.authors.filter(
+      (author: Author, index: number) => index !== deletedIndex,
+    );
+
+    this.setState({
+      ...this.state,
+      authors: newAuthorList,
     });
   };
 
@@ -62,7 +73,10 @@ class AddBookForm extends Component<{}, State> {
           onChange={this.handleChange('title')}
         />
         <div>
-          <div>Авторы</div>
+          <div>
+            Авторы
+            <Button title="+ автора" size="small" onClick={this.addAuthor} />
+          </div>
           {authors.map((author: Author, index: number) => {
             return (
               <div key={`author:${index}`} className="form_item form_item--author">
@@ -84,10 +98,12 @@ class AddBookForm extends Component<{}, State> {
                   validateLength={20}
                   onChange={this.handleChangeAuthor('surname', index)}
                 />
+                {authors.length !== 1 && (
+                  <Button title="🗑️" size="small" onClick={() => this.removeAuthor(index)} />
+                )}
               </div>
             );
           })}
-          <Button title="Добавить автора" onClick={this.addAnotherAuthor} />
         </div>
         <Input
           label="Стр."

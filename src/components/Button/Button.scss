@@ -1,7 +1,7 @@
 @import '../../styles/vars.scss';
 
 .button {
-  padding: 10px;
+  padding: $d_small;
   text-align: center;
 
   border-radius: 2px;
@@ -32,5 +32,10 @@
   &:active,
   &:disabled {
     box-shadow: unset;
+  }
+
+  &--small {
+    padding: $d_tiny;
+    font-size: $fs_small;
   }
 }
