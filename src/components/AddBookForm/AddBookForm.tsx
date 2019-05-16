@@ -65,7 +65,7 @@ class AddBookForm extends Component<{}, State> {
           <div>Авторы</div>
           {authors.map((author: Author, index: number) => {
             return (
-              <div key={`${author.name}+${index}`} className="form_item form_item--author">
+              <div key={`author:${index}`} className="form_item form_item--author">
                 <Input
                   label="Имя"
                   name="name"
