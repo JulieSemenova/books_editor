@@ -43,10 +43,6 @@ class BookCard extends React.Component<Props> {
         </div>
         <div>Количество страниц: {pages}</div>
         <div className="bookCard_buttons">
-          <Button
-            title="👁️"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.handleGoTo(e)}
-          />
           <Button title="🗑️" onClick={(e: any) => e.stopPropagation()} />
           <Button title="✏️" onClick={(e: any) => e.stopPropagation()} />
         </div>
