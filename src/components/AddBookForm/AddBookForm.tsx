@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Book, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
+import { fullYearValudate } from '../../constants';
 import './AddBookForm.css';
 
 interface State extends Book {}
@@ -60,7 +61,6 @@ class AddBookForm extends Component<{}, State> {
   render() {
     const { title, authors, pages, publisher, publicationYear, editionDate, ISBN } = this.state;
 
-    const fullYearValudate = /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:1[89]|2[0-9])\d{2})\s*$/;
     return (
       <div>
         <Input
