@@ -1,4 +1,5 @@
 export type Book = {
+  id: string;
   title: string;
   authors: Author[];
   pages: string;
@@ -15,6 +16,7 @@ export type Author = {
 
 export interface ReduxState {
   filters: Filters.State;
+  books: Books.State;
 }
 
 export interface Action {
@@ -33,4 +35,10 @@ export namespace Filters {
 
   export type AC_Add = (sortParam: string) => Action;
   export type AC_Clear = () => Action;
+}
+
+export namespace Books {
+  export interface State {
+    books: Book[];
+  }
 }

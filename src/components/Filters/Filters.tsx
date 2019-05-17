@@ -1,6 +1,6 @@
 import * as React from 'react';
-
 import { connect } from 'react-redux';
+
 import { toggle, clear } from '../../redux/reducers/filters';
 
 interface Props {

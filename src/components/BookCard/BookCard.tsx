@@ -1,17 +1,26 @@
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 import { Author, Book } from '../../types';
 import Button from '../Button/Button';
+import { deleteBook } from '../../redux/reducers/books';
+
 import './BookCard.css';
 
 interface Props extends RouteComponentProps, Book {
   id: string;
+  deleteBook: any;
 }
 
 class BookCard extends React.Component<Props> {
   handleGoTo = (e: React.MouseEvent<HTMLElement>) => {
     this.props.history.push(`/${this.props.id}`);
+  };
+
+  handleDeleteBook = () => {
+    this.props.deleteBook(this.props.id);
   };
 
   render() {
@@ -43,7 +52,7 @@ class BookCard extends React.Component<Props> {
         </div>
         <div>Количество страниц: {pages}</div>
         <div className="bookCard_buttons">
-          <Button title="🗑️" onClick={(e: any) => e.stopPropagation()} />
+          <Button title="🗑️" onClick={this.handleDeleteBook} />
           <Button title="✏️" onClick={(e: any) => e.stopPropagation()} />
         </div>
       </article>
@@ -51,4 +60,10 @@ class BookCard extends React.Component<Props> {
   }
 }
 
-export default withRouter(BookCard);
+export default compose(
+  withRouter,
+  connect(
+    null,
+    { deleteBook },
+  ),
+)(BookCard);
