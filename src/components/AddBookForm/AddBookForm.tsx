@@ -6,6 +6,7 @@ import Button from '../Button/Button';
 import { fullYearValudate } from '../../constants';
 import './AddBookForm.css';
 
+type ValidAuthor = { name: boolean | null; surname: boolean | null };
 interface State {
   fields: {
     [key: string]: string;
@@ -14,7 +15,7 @@ interface State {
     [key: string]: boolean | null;
   };
   authors: Author[];
-  isAuthorsValid: [{ name: boolean | null; surname: boolean | null }];
+  isAuthorsValid: ValidAuthor[];
   isFormValid: boolean;
 }
 
@@ -51,12 +52,32 @@ class AddBookForm extends Component<Props, State> {
   };
 
   private handleChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(
+      {
+        ...this.state,
+        fields: {
+          ...this.state.fields,
+          [key]: event.target.value,
+        },
+      },
+      () => this.validateForm(),
+    );
+  };
+
+  private handleChangeAuthor = (key: keyof Author, elemIndex: number) => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const authorsNew = this.state.authors.slice();
+
+    authorsNew.map((author: Author, index: number) => {
+      if (index === elemIndex) {
+        author[key] = event.target.value;
+      }
+    });
+
     this.setState({
       ...this.state,
-      fields: {
-        ...this.state.fields,
-        [key]: event.target.value,
-      },
+      authors: authorsNew,
     });
   };
 
@@ -67,6 +88,21 @@ class AddBookForm extends Component<Props, State> {
         ...this.state.fieldsValid,
         [key]: null,
       },
+      isFormValid: false,
+    });
+  };
+
+  private handleFocusAuthor = (key: string, elemIndex: number) => {
+    const newAuthor = this.state.isAuthorsValid.slice();
+    newAuthor.map((author: any, index: number) => {
+      if (index === elemIndex) {
+        author[key] = null;
+      }
+    });
+
+    this.setState({
+      ...this.state,
+      isAuthorsValid: newAuthor,
     });
   };
 
@@ -83,20 +119,20 @@ class AddBookForm extends Component<Props, State> {
     const value = this.state.fields[key];
 
     let isValid = true;
-    if (required && (!value || !value.length)) {
+
+    if (required && (!value || value === '')) {
       isValid = false;
-    }
-    if (type === 'letters') {
-      const valueLength = value.length;
-      if (validateRule.max && valueLength > validateRule.max) {
-        isValid = false;
+    } else {
+      if (type === 'letters' && value !== '') {
+        const valueLength = value.length;
+        if (validateRule.max && valueLength > validateRule.max) {
+          isValid = false;
+        }
       }
-    }
 
-    if (type === 'number') {
-      const digits = /[0-9]/;
+      if (type === 'number' && value !== '') {
+        const digits = /^[0-9]+$/;
 
-      if (value !== '') {
         if (!digits.test(value)) {
           isValid = false;
         }
@@ -107,11 +143,11 @@ class AddBookForm extends Component<Props, State> {
           isValid = false;
         }
       }
-    }
 
-    if (type === 'regexp') {
-      if (validateRule.pattern && value && !validateRule.pattern.test(value)) {
-        isValid = false;
+      if (type === 'regexp') {
+        if (validateRule.pattern && value && !validateRule.pattern.test(value)) {
+          isValid = false;
+        }
       }
     }
 
@@ -140,34 +176,83 @@ class AddBookForm extends Component<Props, State> {
     }
 
     const newValidArray = this.state.isAuthorsValid.slice();
-    newValidArray[elemIndex][key] = isValid;
-    console.log(newValidArray);
+    newValidArray.map((author: any, index: number) => {
+      if (index === elemIndex) {
+        author[key] = isValid;
+      }
+    });
 
-    // this.setState({
-    //   ...this.state,
-    //   isAuthorsValid: newValidArray,
-    // });
+    this.setState({
+      ...this.state,
+      isAuthorsValid: newValidArray,
+    });
 
     this.validateForm();
   };
 
   validateForm = () => {
-    let isFormValid: boolean = Object.keys(this.state.fieldsValid).every((key: any) => {
+    let fieldsFormValid: boolean = Object.keys(this.state.fieldsValid).every((key: any) => {
       if (this.state.fieldsValid[key] !== null && !this.state.fieldsValid[key]) {
         return false;
       }
       return true;
     });
 
+    let authorsFormValid: boolean =
+      !!this.state.authors.length &&
+      this.state.isAuthorsValid.every((author: any) => {
+        return !!author.name && !!author.surname;
+      });
+
     this.setState({
-      isFormValid,
+      isFormValid: fieldsFormValid && authorsFormValid,
     });
+  };
+
+  private addAuthor = (e: any) => {
+    e.preventDefault();
+
+    const author = {
+      name: '',
+      surname: '',
+    };
+
+    const authorValid = {
+      name: null,
+      surname: null,
+    };
+
+    this.setState({
+      ...this.state,
+      authors: this.state.authors.concat(author),
+      isAuthorsValid: this.state.isAuthorsValid.concat(authorValid),
+      isFormValid: false,
+    });
+  };
+
+  private removeAuthor = (elemIndex: number, e: any) => {
+    e.preventDefault();
+    const newAuthorArray = this.state.authors
+      .slice()
+      .filter((author: Author, index: number) => index !== elemIndex);
+    const newAuthorValidityArray = this.state.isAuthorsValid
+      .slice()
+      .filter((author: ValidAuthor, index: number) => index !== elemIndex);
+
+    this.setState({
+      ...this.state,
+      authors: newAuthorArray,
+      isAuthorsValid: newAuthorValidityArray,
+    });
+    this.validateForm();
   };
 
   renderAuthors = () => {
     const { authors } = this.state;
     return (
-      <>
+      <div>
+        <span>Авторы</span>
+        <Button title="+ автора" size="small" onClick={this.addAuthor} />
         {authors.map((author: Author, index: number) => {
           return (
             <div key={`author:${index}`} className="form_item form_item--author">
@@ -177,8 +262,8 @@ class AddBookForm extends Component<Props, State> {
                 value={author.name}
                 required
                 onBlur={() => this.validateAuthor('name', index)}
-                onFocus={() => this.handleFocus('title')}
-                onChange={this.handleChange('title')}
+                onFocus={() => this.handleFocusAuthor('name', index)}
+                onChange={this.handleChangeAuthor('name', index)}
                 isValid={this.state.isAuthorsValid[index].name}
                 clue="Не больше 20 символов"
               />
@@ -188,22 +273,30 @@ class AddBookForm extends Component<Props, State> {
                 value={author.surname}
                 required
                 onBlur={() => this.validateAuthor('surname', index)}
-                onFocus={() => this.handleFocus('title')}
-                onChange={this.handleChange('title')}
+                onFocus={() => this.handleFocusAuthor('surname', index)}
+                onChange={this.handleChangeAuthor('surname', index)}
                 isValid={this.state.isAuthorsValid[index].surname}
                 clue="Не больше 20 символов"
               />
+              {authors.length > 1 && (
+                <Button size="small" title="🗑️" onClick={e => this.removeAuthor(index, e)} />
+              )}
             </div>
           );
         })}
-      </>
+      </div>
     );
   };
+
+  handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   render() {
     const { title, pages, publisher, publicationYear, editionDate, ISBN } = this.state.fields;
 
     return (
-      <form>
+      <form onClick={this.handleSubmitForm}>
         <Input
           label="Заголовок"
           name="title"
@@ -241,7 +334,7 @@ class AddBookForm extends Component<Props, State> {
           label="Год публикации"
           name="publicationYear"
           value={publicationYear}
-          onBlur={() => this.validateInput('publicationYear', 'letters', { min: 30 })}
+          onBlur={() => this.validateInput('publicationYear', 'number', { min: 1800 })}
           onFocus={() => this.handleFocus('publicationYear')}
           onChange={this.handleChange('publicationYear')}
           isValid={this.state.fieldsValid.publicationYear}
@@ -269,7 +362,7 @@ class AddBookForm extends Component<Props, State> {
         />
 
         <div className="form_buttons">
-          <Button title="Отмена" onClick={(e: any) => e.preventDefault()} />
+          <Button title="Отмена" onClick={this.props.onClick} />
           <Button
             title="Добавить"
             type="primary"
