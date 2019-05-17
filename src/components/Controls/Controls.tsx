@@ -31,7 +31,7 @@ class Controls extends React.Component<{}, State> {
         </div>
         {this.state.isModalOpen && (
           <Popup title={'Добавить книгу'} onClick={this.toggleModal}>
-            <AddBookForm />
+            <AddBookForm onClick={this.toggleModal} />
           </Popup>
         )}
       </>

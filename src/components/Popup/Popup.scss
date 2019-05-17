@@ -7,11 +7,12 @@
     top: 50%;
     left: 50%;
     max-height: 100vh;
-    min-width: 320px;
+    min-width: 350px;
     padding: $d_xnormal;
     transform: translate(-50%, -50%);
     overflow: scroll;
     background-color: #ffffff;
+    border-radius: $d_tiny;
   }
 
   &_title {
@@ -27,8 +28,7 @@
     width: 350%;
     height: 100%;
     overflow: hidden;
-    background-color: rgba($c_primary, 0.9);
-    animation: overlaySlideOut 0.7s $easing both;
+    background-color: rgba($c_secondary, 0.9);
   }
 
   &_closeBtn {
