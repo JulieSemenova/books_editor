@@ -21,12 +21,6 @@
     background-color: $c_secondary;
   }
 
-  &:disabled {
-    background-color: #f5f5f5;
-    color: rgba($c_contrast, 0.32);
-    cursor: default;
-  }
-
   &--primary {
     background-color: $c_primary;
     border-color: $c_primary;
@@ -38,6 +32,14 @@
       background-color: rgba($c_primary, 0.8);
       border-color: rgba($c_primary, 0.8);
     }
+  }
+
+  &:disabled {
+    background-color: $c_secondary;
+    border-color: darken($c_secondary, 5);
+    color: rgba($c_contrast, 0.5);
+    cursor: not-allowed;
+    user-select: none;
   }
 
   &--small {

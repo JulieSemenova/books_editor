@@ -28,8 +28,7 @@
     width: 350%;
     height: 100%;
     overflow: hidden;
-    background-color: rgba($c_primary, 0.9);
-    animation: overlaySlideOut 0.7s $easing both;
+    background-color: rgba($c_secondary, 0.9);
   }
 
   &_closeBtn {

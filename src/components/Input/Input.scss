@@ -28,4 +28,13 @@
     display: block;
     margin-top: $d_tiny;
   }
+
+  &_comment {
+    color: rgba($c_main, 0.5);
+    font-size: $fs_tiny;
+  }
+
+  &_requiredSign {
+    color: $c_warn;
+  }
 }
