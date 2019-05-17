@@ -2,7 +2,7 @@
 
 .bookList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 200px);
+  grid-template-columns: repeat(auto-fit, $card_width);
   grid-auto-rows: 300px;
   grid-gap: 10px;
 }

@@ -4,14 +4,21 @@
   flex-direction: column;
   justify-content: flex-start;
   height: 300px;
-  width: 200px;
-  padding: 20px;
-  background-color: palevioletred;
+  width: $card_width;
+  padding: $d_xnormal;
+  border: 1px solid;
+  border-radius: $d_tiny;
+  border-color: rgba($c_main, 0.05);
 
   transition-property: background-color;
   transition-timing-function: $easing;
   transition-duration: $duration;
   cursor: pointer;
+
+  &:hover {
+    border-color: rgba($c_main, 0.09);
+    box-shadow: 0 2px 8px rgba($c_main, 0.09);
+  }
 
   &_imgContainer {
     width: 60px;
@@ -25,9 +32,5 @@
     display: flex;
     justify-content: space-between;
     margin-top: auto;
-  }
-
-  &:hover {
-    background-color: tan;
   }
 }

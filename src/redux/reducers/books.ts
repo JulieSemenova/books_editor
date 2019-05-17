@@ -17,6 +17,17 @@ export const initialState: Books.State = {
       ISBN: 'ISBN',
       img: 'any',
     },
+    {
+      id: 'id1',
+      title: 'title1',
+      authors: [{ name: '111111', surname: 'surn11111ame' }],
+      pages: '2100',
+      publisher: 'publi1sher',
+      publicationYear: '1800',
+      editionDate: '01.01.1999',
+      ISBN: 'ISBN',
+      img: 'any',
+    },
   ],
 };
 
@@ -33,7 +44,7 @@ export default function reducer(
       };
     }
     case DELETE: {
-      const bookList = state.books.slice().filter((book: any) => book.id !== action.data.id);
+      const bookList = state.books.slice().filter((book: any) => book.id !== action.data);
       return {
         ...state,
         books: bookList,
@@ -58,15 +69,16 @@ export default function reducer(
   }
 }
 
-export const addBook = (book: any) => {
+export const addBook = (data: any) => {
   return {
-    book,
+    data,
     type: ADD,
   };
 };
 
-export const deleteBook = (id: string) => {
+export const deleteBook = (data: string) => {
   return {
+    data,
     type: DELETE,
   };
 };
