@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { Book, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { fullYearValudate } from '../../constants';
+import { addBook } from '../../redux/reducers/books';
+
 import './AddBookForm.css';
 
 type ValidAuthor = { name: boolean | null; surname: boolean | null };
@@ -21,6 +24,7 @@ interface State {
 
 interface Props {
   onClick: () => void;
+  addBook: any;
 }
 
 class AddBookForm extends Component<Props, State> {
@@ -51,7 +55,9 @@ class AddBookForm extends Component<Props, State> {
     isFormValid: false,
   };
 
-  private handleChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  private handleChange = (key: string) => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     this.setState(
       {
         ...this.state,
@@ -191,12 +197,14 @@ class AddBookForm extends Component<Props, State> {
   };
 
   validateForm = () => {
-    let fieldsFormValid: boolean = Object.keys(this.state.fieldsValid).every((key: any) => {
-      if (this.state.fieldsValid[key] !== null && !this.state.fieldsValid[key]) {
-        return false;
-      }
-      return true;
-    });
+    let fieldsFormValid: boolean = Object.keys(this.state.fieldsValid).every(
+      (key: any) => {
+        if (this.state.fieldsValid[key] !== null && !this.state.fieldsValid[key]) {
+          return false;
+        }
+        return true;
+      },
+    );
 
     let authorsFormValid: boolean =
       !!this.state.authors.length &&
@@ -279,7 +287,11 @@ class AddBookForm extends Component<Props, State> {
                 clue="Не больше 20 символов"
               />
               {authors.length > 1 && (
-                <Button size="small" title="🗑️" onClick={e => this.removeAuthor(index, e)} />
+                <Button
+                  size="small"
+                  title="🗑️"
+                  onClick={e => this.removeAuthor(index, e)}
+                />
               )}
             </div>
           );
@@ -290,13 +302,28 @@ class AddBookForm extends Component<Props, State> {
 
   handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { fields, authors } = this.state;
+    const bookInfo = {
+      ...fields,
+      authors,
+      id: `${fields.title}+${authors[0].name}`,
+    };
+    this.props.addBook(bookInfo);
+    this.props.onClick();
   };
 
   render() {
-    const { title, pages, publisher, publicationYear, editionDate, ISBN } = this.state.fields;
+    const {
+      title,
+      pages,
+      publisher,
+      publicationYear,
+      editionDate,
+      ISBN,
+    } = this.state.fields;
 
     return (
-      <form onClick={this.handleSubmitForm}>
+      <form onSubmit={this.handleSubmitForm}>
         <Input
           label="Заголовок"
           name="title"
@@ -344,7 +371,9 @@ class AddBookForm extends Component<Props, State> {
           label="Дата выхода в тираж"
           name="editionDate"
           value={editionDate}
-          onBlur={() => this.validateInput('editionDate', 'regexp', { pattern: fullYearValudate })}
+          onBlur={() =>
+            this.validateInput('editionDate', 'regexp', { pattern: fullYearValudate })
+          }
           onFocus={() => this.handleFocus('editionDate')}
           onChange={this.handleChange('editionDate')}
           isValid={this.state.fieldsValid.editionDate}
@@ -354,7 +383,9 @@ class AddBookForm extends Component<Props, State> {
           label="ISBN"
           name="ISBN"
           value={ISBN}
-          onBlur={() => this.validateInput('ISBN', 'regexp', { pattern: fullYearValudate })}
+          onBlur={() =>
+            this.validateInput('ISBN', 'regexp', { pattern: fullYearValudate })
+          }
           onFocus={() => this.handleFocus('ISBN')}
           onChange={this.handleChange('ISBN')}
           isValid={this.state.fieldsValid.ISBN}
@@ -366,8 +397,8 @@ class AddBookForm extends Component<Props, State> {
           <Button
             title="Добавить"
             type="primary"
+            htmlType="submit"
             disabled={this.state.isFormValid !== null && !this.state.isFormValid}
-            onClick={(e: any) => e.preventDefault()}
           />
         </div>
       </form>
@@ -375,4 +406,9 @@ class AddBookForm extends Component<Props, State> {
   }
 }
 
-export default AddBookForm;
+export default connect(
+  null,
+  {
+    addBook,
+  },
+)(AddBookForm);
