@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
+import { v4 } from 'node-uuid';
 
 import { Books, Author } from '../../types';
 import Input from '../Input/Input';
@@ -27,7 +28,7 @@ interface Props {
   addBook: Books.AC_AddBook;
 }
 
-class AddBookForm extends Component<Props, State> {
+class AddBookForm extends React.Component<Props, State> {
   readonly state: State = {
     fields: {
       title: '',
@@ -306,7 +307,7 @@ class AddBookForm extends Component<Props, State> {
     const bookInfo = {
       ...fields,
       authors,
-      id: `${fields.title}+${authors[0].name}`,
+      id: v4(),
     };
     this.props.addBook(bookInfo as Books.Book);
     this.props.onClick();
