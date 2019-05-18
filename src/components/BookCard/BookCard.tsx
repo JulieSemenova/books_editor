@@ -10,7 +10,7 @@ import './BookCard.css';
 
 interface Props extends RouteComponentProps, Books.Book {
   id: string;
-  deleteBook: any;
+  deleteBook: Books.AC_DeleteBook;
 }
 
 class BookCard extends React.Component<Props> {
@@ -18,7 +18,7 @@ class BookCard extends React.Component<Props> {
     this.props.history.push(`/${this.props.id}`);
   };
 
-  handleDeleteBook = (e: any) => {
+  handleDeleteBook = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     this.props.deleteBook(this.props.id);
   };
@@ -52,8 +52,14 @@ class BookCard extends React.Component<Props> {
         </div>
         <div>Количество страниц: {pages}</div>
         <div className="bookCard_buttons">
-          <Button title="🗑️" onClick={(e: any) => this.handleDeleteBook(e)} />
-          <Button title="✏️" onClick={(e: any) => e.stopPropagation()} />
+          <Button
+            title="🗑️"
+            onClick={(e: React.MouseEvent<HTMLElement>) => this.handleDeleteBook(e)}
+          />
+          <Button
+            title="✏️"
+            onClick={(e: React.MouseEvent<HTMLElement>) => e.stopPropagation()}
+          />
         </div>
       </article>
     );

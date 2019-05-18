@@ -44,7 +44,9 @@ export default function reducer(
       };
     }
     case DELETE: {
-      const bookList = state.books.slice().filter((book: any) => book.id !== action.data);
+      const bookList = state.books
+        .slice()
+        .filter((book: Books.Book) => book.id !== action.data);
       return {
         ...state,
         books: bookList,
@@ -53,7 +55,7 @@ export default function reducer(
     case UPDATE: {
       const updatedBook = action.data.book;
       const newBookList = state.books.slice();
-      newBookList.map((book: any) => {
+      newBookList.map((book: Books.Book) => {
         if (book.id === action.data.id) {
           newBookList[action.data.id] = updatedBook;
         }

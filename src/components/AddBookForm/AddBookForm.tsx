@@ -24,7 +24,7 @@ interface State {
 
 interface Props {
   onClick: () => void;
-  addBook: any;
+  addBook: Books.AC_AddBook;
 }
 
 class AddBookForm extends Component<Props, State> {
@@ -217,7 +217,7 @@ class AddBookForm extends Component<Props, State> {
     });
   };
 
-  private addAuthor = (e: any) => {
+  private addAuthor = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
     const author = {
@@ -308,7 +308,7 @@ class AddBookForm extends Component<Props, State> {
       authors,
       id: `${fields.title}+${authors[0].name}`,
     };
-    this.props.addBook(bookInfo);
+    this.props.addBook(bookInfo as Books.Book);
     this.props.onClick();
   };
 

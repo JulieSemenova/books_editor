@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Filters, Action } from '../../types';
+import { Filters, Action, ReduxState } from '../../types';
 import { pickFilter, toggleDirection, clear } from '../../redux/reducers/filters';
 import './Filters.css';
 
@@ -81,6 +81,6 @@ class FiltersContainer extends React.Component<Props, {}> {
 }
 
 export default connect(
-  ({ filters }: any) => ({ filters }),
+  ({ filters }: ReduxState) => ({ filters }),
   { pickFilter, toggleDirection, clear },
 )(FiltersContainer);
