@@ -1,17 +1,12 @@
 import { Filters, Action } from '../../types';
 
-export const TOGGLE: string = 'filters/TOGGLE';
+export const PICK_FILTER: string = 'filters/PICK_FILTER';
+export const TOGGLE_DIRECTION: string = 'filters/TOGGLE_DIRECTION';
 export const CLEAR: string = 'filters/CLEAR';
 
 export const initialState: Filters.State = {
-  year: {
-    direction: 'ASC',
-    isActive: false,
-  },
-  title: {
-    direction: 'ASC',
-    isActive: false,
-  },
+  param: 'default',
+  direction: 'ASC',
 };
 
 export default function reducer(
@@ -19,8 +14,20 @@ export default function reducer(
   action: Action = {},
 ): Filters.State {
   switch (action.type) {
-    case TOGGLE: {
-      return {};
+    case PICK_FILTER: {
+      const param = action.data;
+      return {
+        ...state,
+        param,
+        direction: 'ASC',
+      };
+    }
+    case TOGGLE_DIRECTION: {
+      const direction = state.direction === 'ASC' ? 'DESC' : 'ASC';
+      return {
+        ...state,
+        direction,
+      };
     }
 
     case CLEAR: {
@@ -31,10 +38,16 @@ export default function reducer(
   }
 }
 
-export const toggle: Filters.AC_Add = (sortParam: string) => {
+export const pickFilter: Filters.AC_PickFilter = (data: string) => {
   return {
-    sortParam,
-    type: TOGGLE,
+    data,
+    type: PICK_FILTER,
+  };
+};
+
+export const toggleDirection: Filters.AC_ToggleDirection = () => {
+  return {
+    type: TOGGLE_DIRECTION,
   };
 };
 

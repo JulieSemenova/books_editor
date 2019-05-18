@@ -69,21 +69,24 @@ export default function reducer(
   }
 }
 
-export const addBook = (data: any) => {
+export const addBook: Books.AC_AddBook = (data: Books.Book) => {
   return {
     data,
     type: ADD,
   };
 };
 
-export const deleteBook = (data: string) => {
+export const deleteBook: Books.AC_DeleteBook = (data: Books.Book['id']) => {
   return {
     data,
     type: DELETE,
   };
 };
 
-export const updateBook = (data: { id: string; book: any }) => {
+export const updateBook: Books.AC_UpdateBook = (data: {
+  id: string;
+  book: Books.Book;
+}) => {
   return {
     data,
     type: UPDATE,

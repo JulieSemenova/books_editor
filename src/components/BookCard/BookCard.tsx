@@ -2,13 +2,13 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Author, Book } from '../../types';
+import { Author, Books } from '../../types';
 import Button from '../Button/Button';
 import { deleteBook } from '../../redux/reducers/books';
 
 import './BookCard.css';
 
-interface Props extends RouteComponentProps, Book {
+interface Props extends RouteComponentProps, Books.Book {
   id: string;
   deleteBook: any;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Book, Author } from '../../types';
+import { Books, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { fullYearValudate } from '../../constants';

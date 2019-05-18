@@ -1,0 +1,43 @@
+@import '../../styles/vars.scss';
+.filters {
+  &_paramsTitle {
+    color: rgba($c_main, 0.8);
+    font-size: $fs_normal;
+    font-weight: $fw_bold;
+  }
+
+  &_item {
+    display: inline-block;
+    margin-right: $d_normal;
+    padding: 0 $d_small;
+    color: rgba($c_main, 0.5);
+    font-size: $fs_normal;
+    font-weight: $fw_regular;
+    cursor: pointer;
+
+    &--active {
+      text-decoration: underline;
+      text-decoration-color: $c_primary;
+      text-decoration-style: dashed;
+    }
+
+    &:hover {
+      color: rgba($c_main, 0.7);
+    }
+  }
+
+  &_clear {
+    font-size: $fs_normal;
+    font-weight: $fw_regular;
+    cursor: pointer;
+
+    text-decoration: underline;
+    text-decoration-color: $c_primary;
+    text-decoration-style: solid;
+
+    &:hover {
+      color: rgba($c_main, 0.7);
+      text-decoration-color: $c_secondary;
+    }
+  }
+}
