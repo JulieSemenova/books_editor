@@ -29,11 +29,13 @@ class Controls extends React.Component<{}, State> {
           <Filters />
           <Button title="Добавить книгу" onClick={this.toggleModal} />
         </div>
-        {this.state.isModalOpen && (
-          <Popup title={'Добавить книгу'} onClick={this.toggleModal}>
-            <AddBookForm onClick={this.toggleModal} />
-          </Popup>
-        )}
+        <Popup
+          title={'Добавить книгу'}
+          isVisible={this.state.isModalOpen}
+          onClick={this.toggleModal}
+        >
+          <AddBookForm onClick={this.toggleModal} />
+        </Popup>
       </>
     );
   }
