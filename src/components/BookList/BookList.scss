@@ -3,6 +3,6 @@
 .bookList {
   display: grid;
   grid-template-columns: repeat(auto-fit, $card_width);
-  grid-auto-rows: 300px;
+  grid-auto-rows: $card_height;
   grid-gap: 10px;
 }
