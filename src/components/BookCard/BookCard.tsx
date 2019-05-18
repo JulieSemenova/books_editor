@@ -7,20 +7,36 @@ import Button from '../Button/Button';
 import { deleteBook } from '../../redux/reducers/books';
 
 import './BookCard.css';
+import Popup from '../Popup/Popup';
+import UpdateBookForm from '../UpdateBookForm/UpdateBookForm';
 
-interface Props extends RouteComponentProps, Books.Book {
-  id: string;
+interface Props extends RouteComponentProps {
+  book: Books.Book;
   deleteBook: Books.AC_DeleteBook;
 }
 
-class BookCard extends React.Component<Props> {
-  handleGoTo = (e: React.MouseEvent<HTMLElement>) => {
-    this.props.history.push(`/${this.props.id}`);
+interface State {
+  isUpdateModalOpen: boolean;
+}
+
+class BookCard extends React.Component<Props, State> {
+  readonly state: State = {
+    isUpdateModalOpen: false,
+  };
+
+  handleGoTo = () => {
+    this.props.history.push(`/${this.props.book.id}`);
   };
 
   handleDeleteBook = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    this.props.deleteBook(this.props.id);
+    this.props.deleteBook(this.props.book.id);
+  };
+
+  toggleModal = () => {
+    this.setState({
+      isUpdateModalOpen: !this.state.isUpdateModalOpen,
+    });
   };
 
   render() {
@@ -33,11 +49,11 @@ class BookCard extends React.Component<Props> {
       publicationYear,
       editionDate,
       ISBN,
-    } = this.props;
+    } = this.props.book;
     return (
       <article
         className="bookCard"
-        onClick={(e: React.MouseEvent<HTMLElement>) => this.handleGoTo(e)}
+        // onClick={this.handleGoTo}
       >
         <div className="bookCard_imgContainer">
           {img ? (
@@ -85,11 +101,15 @@ class BookCard extends React.Component<Props> {
             title="🗑️"
             onClick={(e: React.MouseEvent<HTMLElement>) => this.handleDeleteBook(e)}
           />
-          <Button
-            title="✏️"
-            onClick={(e: React.MouseEvent<HTMLElement>) => e.stopPropagation()}
-          />
+          <Button title="✏️" onClick={this.toggleModal} />
         </div>
+        <Popup
+          title="Редактирование книги"
+          onClick={this.toggleModal}
+          isVisible={this.state.isUpdateModalOpen}
+        >
+          <UpdateBookForm book={this.props.book} />
+        </Popup>
       </article>
     );
   }

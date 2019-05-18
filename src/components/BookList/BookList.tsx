@@ -54,7 +54,7 @@ class BookList extends Component<Props, {}> {
       <div className="bookList">
         {bookList && bookList.length > 0 ? (
           this.prepareData().map((book: Books.Book) => {
-            return <BookCard key={book.id} {...book} />;
+            return <BookCard key={book.id} book={book} />;
           })
         ) : (
           <span>Список книг пуст</span>
