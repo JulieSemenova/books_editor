@@ -42,29 +42,6 @@ interface State {
   isFormValid: boolean;
 }
 
-const EmptyAuthor: Author = {
-  name: {
-    value: '',
-    isValid: null,
-    required: true,
-    label: 'Имя',
-    validateRules: {
-      type: 'letters',
-      max: 20,
-    },
-  },
-  surname: {
-    value: '',
-    isValid: null,
-    required: true,
-    label: 'Фамилия',
-    validateRules: {
-      type: 'letters',
-      max: 20,
-    },
-  },
-};
-
 class EditBookForm extends React.Component<Props, State> {
   state: State = {
     fields: {
@@ -132,7 +109,30 @@ class EditBookForm extends React.Component<Props, State> {
           type: 'regexp',
         },
       },
-      authors: [EmptyAuthor],
+      authors: [
+        {
+          name: {
+            value: '',
+            isValid: null,
+            required: true,
+            label: 'Имя',
+            validateRules: {
+              type: 'letters',
+              max: 20,
+            },
+          },
+          surname: {
+            value: '',
+            isValid: null,
+            required: true,
+            label: 'Фамилия',
+            validateRules: {
+              type: 'letters',
+              max: 20,
+            },
+          },
+        },
+      ],
     },
     img: '',
     isFormValid: true,
@@ -197,38 +197,73 @@ class EditBookForm extends React.Component<Props, State> {
       ...this.state,
       fields: {
         ...this.state.fields,
-        authors: newAuthors.concat(EmptyAuthor),
+        authors: newAuthors.concat({
+          name: {
+            value: '',
+            isValid: null,
+            required: true,
+            label: 'Имя',
+            validateRules: {
+              type: 'letters',
+              max: 20,
+            },
+          },
+          surname: {
+            value: '',
+            isValid: null,
+            required: true,
+            label: 'Фамилия',
+            validateRules: {
+              type: 'letters',
+              max: 20,
+            },
+          },
+        }),
       },
     });
   };
 
   renderAuthors = () => {
     const { authors } = this.state.fields;
-    return authors.map((author: Author, index: number) => {
-      return (
-        <div key={`author:${index}`} className="form_item form_item--author">
-          {Object.keys(author).map((key: string) => {
-            const formItem = author[key as keyof Author];
-            return (
+    return (
+      <div>
+        <span>Авторы</span>
+        <Button title="+ автора" size="small" onClick={this.addAuthor} />
+        {authors.map((author: Author, index: number) => {
+          return (
+            <div key={`author:${index}`} className="form_item form_item--author">
               <Input
-                label={formItem.label}
-                name={`author:${index}_${key}`}
-                key={v4()}
-                value={formItem.value}
-                required={formItem.required}
-                isValid={formItem.isValid}
-                onChange={this.handleChangeAuthor(key as keyof Author, index)}
-                clue={formItem.clue}
-                onBlur={() => {}}
+                label="Имя"
+                name="name"
+                value={author.name.value}
+                required
+                onBlur={() => this.validateAuthor('name', index)}
+                onChange={this.handleChangeAuthor('name', index)}
+                isValid={author.name.isValid}
+                clue="Не больше 20 символов"
               />
-            );
-          })}
-          {authors.length > 1 && (
-            <Button size="small" title="🗑️" onClick={e => this.removeAuthor(index, e)} />
-          )}
-        </div>
-      );
-    });
+              <Input
+                label="Фамилия"
+                name="surname"
+                value={author.surname.value}
+                required
+                onBlur={() => this.validateAuthor('surname', index)}
+                onChange={this.handleChangeAuthor('surname', index)}
+                isValid={author.surname.isValid}
+                clue="Не больше 20 символов"
+              />
+              {authors.length > 1 && (
+                <Button
+                  size="small"
+                  title="🗑️"
+                  onClick={e => this.removeAuthor(index, e)}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   validateInput = (
@@ -282,11 +317,50 @@ class EditBookForm extends React.Component<Props, State> {
     });
   };
 
+  validateAuthor = (key: keyof Author, elemIndex: number) => {
+    const { authors } = this.state.fields;
+    const value = authors[elemIndex][key].value;
+    const { max } = authors[elemIndex][key].validateRules;
+
+    let isValid = true;
+    if (!value || !value.length) {
+      isValid = false;
+    }
+    if (value.length > max!) {
+      isValid = false;
+    }
+
+    const newAuthorsArray = this.state.fields.authors.slice();
+    newAuthorsArray.map((author: Author, index: number) => {
+      if (index === elemIndex) {
+        return (author[key].isValid = isValid);
+      }
+      return author;
+    });
+
+    this.setState({
+      ...this.state,
+      fields: {
+        ...this.state.fields,
+        authors: newAuthorsArray,
+      },
+    });
+  };
+
+  checkFormValidation = () => {
+    const { fields } = this.state;
+    const simpleInputsKeys = Object.keys(fields).filter(
+      key => key !== 'authors',
+    ) as (keyof State['fields'])[];
+    return true;
+    // const simpleFieldsValid = simpleInputsKeys.every((key: keyof State['fields']) => (fields[key]).isValid)
+  };
+
   handleSubmitForm = () => {};
 
   render() {
     const { fields } = this.state;
-    const bookFields = Object.keys(fields).filter(
+    const simpleFields = Object.keys(fields).filter(
       key => key !== 'title' && key !== 'authors',
     );
     const titleItem = fields.title;
@@ -310,13 +384,8 @@ class EditBookForm extends React.Component<Props, State> {
           }
           clue={titleItem.clue}
         />
-        <div>
-          <span>Авторы</span>
-          <Button title="+ автора" size="small" onClick={this.addAuthor} />
-          {this.renderAuthors()}
-        </div>
-
-        {bookFields.map((key: any) => {
+        {this.renderAuthors()}
+        {simpleFields.map((key: any) => {
           const formItem = fields[key as keyof State['fields']] as FormSimpleInput;
           return (
             <Input
@@ -339,6 +408,15 @@ class EditBookForm extends React.Component<Props, State> {
             />
           );
         })}
+        <div className="form_buttons">
+          <Button title="Отмена" onClick={this.props.onClick} />
+          <Button
+            title="Добавить"
+            type="primary"
+            htmlType="submit"
+            disabled={!this.checkFormValidation()}
+          />
+        </div>
       </form>
     );
   }
