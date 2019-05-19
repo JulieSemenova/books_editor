@@ -6,6 +6,7 @@ import Popup from '../Popup/Popup';
 import AddBookForm from '../AddBookForm/AddBookForm';
 
 import './Controls.css';
+import EditBookForm from '../EditBookForm/EditBookForm';
 
 interface State {
   isModalOpen: boolean;
@@ -34,7 +35,7 @@ class Controls extends React.Component<{}, State> {
           isVisible={this.state.isModalOpen}
           onClick={this.toggleModal}
         >
-          <AddBookForm onClick={this.toggleModal} />
+          <EditBookForm onClick={this.toggleModal} />
         </Popup>
       </>
     );

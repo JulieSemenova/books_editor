@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 
 import BookCard from '../BookCard/BookCard';
@@ -11,7 +11,7 @@ interface Props {
   direction: Filters.Diretion;
 }
 
-class BookList extends Component<Props, {}> {
+class BookList extends React.Component<Props, {}> {
   prepareData = () => {
     const { param, direction, bookList } = this.props;
     if (param === 'title') {

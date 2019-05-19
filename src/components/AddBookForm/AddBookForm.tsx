@@ -5,7 +5,6 @@ import { v4 } from 'node-uuid';
 import { Books, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
-import { fullYearValudate } from '../../constants';
 import { addBook, updateBook, uploadImage } from '../../redux/reducers/books';
 
 import './AddBookForm.css';
@@ -321,50 +320,50 @@ class AddBookForm extends React.Component<Props, State> {
     this.validateForm();
   };
 
-  renderAuthors = () => {
-    const { authors } = this.state;
-    return (
-      <div>
-        <span>Авторы</span>
-        <Button title="+ автора" size="small" onClick={this.addAuthor} />
-        {authors.map((author: Author, index: number) => {
-          return (
-            <div key={`author:${index}`} className="form_item form_item--author">
-              <Input
-                label="Имя"
-                name="name"
-                value={author.name}
-                required
-                onBlur={() => this.validateAuthor('name', index)}
-                onFocus={() => this.handleFocusAuthor('name', index)}
-                onChange={this.handleChangeAuthor('name', index)}
-                isValid={this.state.isAuthorsValid[index].name}
-                clue="Не больше 20 символов"
-              />
-              <Input
-                label="Фамилия"
-                name="surname"
-                value={author.surname}
-                required
-                onBlur={() => this.validateAuthor('surname', index)}
-                onFocus={() => this.handleFocusAuthor('surname', index)}
-                onChange={this.handleChangeAuthor('surname', index)}
-                isValid={this.state.isAuthorsValid[index].surname}
-                clue="Не больше 20 символов"
-              />
-              {authors.length > 1 && (
-                <Button
-                  size="small"
-                  title="🗑️"
-                  onClick={e => this.removeAuthor(index, e)}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+  // renderAuthors = () => {
+  //   const { authors } = this.state;
+  //   return (
+  //     <div>
+  //       <span>Авторы</span>
+  //       <Button title="+ автора" size="small" onClick={this.addAuthor} />
+  //       {authors.map((author: Author, index: number) => {
+  //         return (
+  //           <div key={`author:${index}`} className="form_item form_item--author">
+  //             <Input
+  //               label="Имя"
+  //               name="name"
+  //               value={author.name}
+  //               required
+  //               onBlur={() => this.validateAuthor('name', index)}
+  //               onFocus={() => this.handleFocusAuthor('name', index)}
+  //               onChange={this.handleChangeAuthor('name', index)}
+  //               isValid={this.state.isAuthorsValid[index].name}
+  //               clue="Не больше 20 символов"
+  //             />
+  //             <Input
+  //               label="Фамилия"
+  //               name="surname"
+  //               value={author.surname}
+  //               required
+  //               onBlur={() => this.validateAuthor('surname', index)}
+  //               onFocus={() => this.handleFocusAuthor('surname', index)}
+  //               onChange={this.handleChangeAuthor('surname', index)}
+  //               isValid={this.state.isAuthorsValid[index].surname}
+  //               clue="Не больше 20 символов"
+  //             />
+  //             {authors.length > 1 && (
+  //               <Button
+  //                 size="small"
+  //                 title="🗑️"
+  //                 onClick={e => this.removeAuthor(index, e)}
+  //               />
+  //             )}
+  //           </div>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -394,7 +393,7 @@ class AddBookForm extends React.Component<Props, State> {
     return (
       <form onSubmit={this.handleSubmitForm}>
         {img && <img width="150" src={img} alt="Превью обложки" />}
-        <Input
+        {/* <Input
           label="Обложка"
           name="img"
           value={''}
@@ -403,8 +402,8 @@ class AddBookForm extends React.Component<Props, State> {
           onChange={this.handleUploadImage}
           type="file"
           clue="Загрузите изображение"
-        />
-        <Input
+        /> */}
+        {/* <Input
           label="Заголовок"
           name="title"
           value={title}
@@ -470,7 +469,7 @@ class AddBookForm extends React.Component<Props, State> {
           onChange={this.handleChange('ISBN')}
           isValid={this.state.isFieldsValid.ISBN}
           clue="????"
-        />
+        /> */}
 
         <div className="form_buttons">
           <Button title="Отмена" onClick={this.props.onClick} />

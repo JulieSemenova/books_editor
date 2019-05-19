@@ -9,7 +9,7 @@ interface State {
 interface Props {
   onChange: React.ChangeEventHandler<any>;
   onBlur: () => void;
-  onFocus: () => void;
+  onFocus?: () => void;
   value?: string | undefined;
   name: string;
   label?: string;
@@ -30,9 +30,9 @@ class Input extends React.PureComponent<Props, State> {
     this.props.onChange(event);
   };
 
-  handleFocus = () => {
-    this.props.onFocus();
-  };
+  // handleFocus = () => {
+  //   this.props.onFocus();
+  // };
 
   handleBlur = () => {
     this.props.onBlur();
@@ -56,7 +56,7 @@ class Input extends React.PureComponent<Props, State> {
           id={name}
           value={value}
           onChange={this.handleChange}
-          onFocus={this.handleFocus}
+          // onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           type={type}
         />
