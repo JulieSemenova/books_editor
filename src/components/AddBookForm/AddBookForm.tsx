@@ -6,7 +6,7 @@ import { Books, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { fullYearValudate } from '../../constants';
-import { addBook, updateBook } from '../../redux/reducers/books';
+import { addBook, updateBook, uploadImage } from '../../redux/reducers/books';
 
 import './AddBookForm.css';
 
@@ -15,18 +15,20 @@ interface State {
   fields: {
     [key: string]: string;
   };
-  fieldsValid: {
+  isFieldsValid: {
     [key: string]: boolean | null;
   };
   authors: Author[];
   isAuthorsValid: ValidAuthor[];
   isFormValid: boolean;
+  imageUrl: string | undefined;
 }
 
 interface Props {
   onClick: () => void;
   addBook: Books.AC_AddBook;
   updateBook: Books.AC_UpdateBook;
+  uploadImage: Books.AC_UploadImage;
   book?: Books.Book;
 }
 
@@ -44,6 +46,7 @@ class AddBookForm extends React.Component<Props, State> {
       editionDate:
         this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
       ISBN: this.props.book && this.props.book.ISBN ? this.props.book.ISBN : '',
+      img: this.props.book ? this.props.book.img : '',
     },
     authors: this.props.book
       ? this.props.book.authors
@@ -53,8 +56,10 @@ class AddBookForm extends React.Component<Props, State> {
             surname: '',
           },
         ],
-    isAuthorsValid: [{ name: null, surname: null }],
-    fieldsValid: {
+    isAuthorsValid: this.props.book
+      ? new Array(this.props.book.authors.length).fill({ name: null, surname: null })
+      : [{ name: null, surname: null }],
+    isFieldsValid: {
       title: null,
       pages: null,
       publisher: null,
@@ -62,7 +67,8 @@ class AddBookForm extends React.Component<Props, State> {
       editionDate: null,
       ISBN: null,
     },
-    isFormValid: false,
+    isFormValid: this.props.book ? true : false,
+    imageUrl: this.props.book ? this.props.book.img : '',
   };
 
   private handleChange = (key: string) => (
@@ -74,6 +80,10 @@ class AddBookForm extends React.Component<Props, State> {
         fields: {
           ...this.state.fields,
           [key]: event.target.value,
+        },
+        isFieldsValid: {
+          ...this.state.isFieldsValid,
+          [key]: false,
         },
       },
       () => this.validateForm(),
@@ -87,8 +97,9 @@ class AddBookForm extends React.Component<Props, State> {
 
     authorsNew.map((author: Author, index: number) => {
       if (index === elemIndex) {
-        author[key] = event.target.value;
+        return (author[key] = event.target.value);
       }
+      return author;
     });
 
     this.setState(
@@ -100,11 +111,40 @@ class AddBookForm extends React.Component<Props, State> {
     );
   };
 
+  handleUploadImage = async (e: any) => {
+    const files = e.target.files;
+    const data = new FormData();
+    data.append('file', files[0]);
+    data.append('upload_preset', 'sickfits');
+
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/graphql-advanced/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      },
+    );
+
+    const file = await res.json();
+    console.log(file);
+    this.setState(
+      {
+        fields: {
+          img: file.secure_url,
+        },
+      },
+      () =>
+        this.props.book
+          ? this.props.uploadImage(this.props.book.id, file.secure_url)
+          : '',
+    );
+  };
+
   private handleFocus = (key: string) => {
     this.setState({
       ...this.state,
-      fieldsValid: {
-        ...this.state.fieldsValid,
+      isFieldsValid: {
+        ...this.state.isFieldsValid,
         [key]: true,
       },
       isFormValid: false,
@@ -115,13 +155,15 @@ class AddBookForm extends React.Component<Props, State> {
     const newAuthor = this.state.isAuthorsValid.slice();
     newAuthor.map((author: any, index: number) => {
       if (index === elemIndex) {
-        author[key] = true;
+        return (author[key] = true);
       }
+      return author;
     });
 
     this.setState({
       ...this.state,
       isAuthorsValid: newAuthor,
+      isFormValid: false,
     });
   };
 
@@ -172,8 +214,8 @@ class AddBookForm extends React.Component<Props, State> {
 
     this.setState({
       ...this.state,
-      fieldsValid: {
-        ...this.state.fieldsValid,
+      isFieldsValid: {
+        ...this.state.isFieldsValid,
         [key]: isValid,
       },
     });
@@ -197,8 +239,9 @@ class AddBookForm extends React.Component<Props, State> {
     const newValidArray = this.state.isAuthorsValid.slice();
     newValidArray.map((author: any, index: number) => {
       if (index === elemIndex) {
-        author[key] = isValid;
+        return (author[key] = isValid);
       }
+      return author;
     });
 
     this.setState(
@@ -211,10 +254,10 @@ class AddBookForm extends React.Component<Props, State> {
   };
 
   validateForm = () => {
-    let fieldsFormValid: boolean = Object.keys(this.state.fieldsValid).every(
+    let fieldsFormValid: boolean = Object.keys(this.state.isFieldsValid).every(
       (key: any) => {
-        if (this.state.fieldsValid[key] !== null && !this.state.fieldsValid[key]) {
-          return false;
+        if (this.state.isFieldsValid[key] !== null) {
+          return this.state.isFieldsValid[key]!;
         }
         return true;
       },
@@ -222,8 +265,14 @@ class AddBookForm extends React.Component<Props, State> {
 
     let authorsFormValid: boolean =
       !!this.state.authors.length &&
-      this.state.isAuthorsValid.every((author: any) => {
-        return !!author.name && !!author.surname;
+      this.state.isAuthorsValid.every((author: ValidAuthor) => {
+        if (author.name !== null) {
+          return author.name;
+        }
+        if (author.surname !== null) {
+          return author.surname;
+        }
+        return true;
       });
 
     this.setState({
@@ -247,15 +296,12 @@ class AddBookForm extends React.Component<Props, State> {
     const newAuthors = this.state.authors.slice();
     const newAuthorsValidity = this.state.isAuthorsValid.slice();
 
-    this.setState(
-      {
-        ...this.state,
-        authors: newAuthors.concat(author),
-        isAuthorsValid: newAuthorsValidity.concat(authorValid),
-        isFormValid: false,
-      },
-      () => this.validateForm(),
-    );
+    this.setState({
+      ...this.state,
+      authors: newAuthors.concat(author),
+      isAuthorsValid: newAuthorsValidity.concat(authorValid),
+      isFormValid: false,
+    });
   };
 
   private removeAuthor = (elemIndex: number, e: any) => {
@@ -342,10 +388,22 @@ class AddBookForm extends React.Component<Props, State> {
       publicationYear,
       editionDate,
       ISBN,
+      img,
     } = this.state.fields;
 
     return (
       <form onSubmit={this.handleSubmitForm}>
+        {img && <img width="150" src={img} alt="Превью обложки" />}
+        <Input
+          label="Обложка"
+          name="img"
+          value={''}
+          onBlur={() => {}}
+          onFocus={() => {}}
+          onChange={this.handleUploadImage}
+          type="file"
+          clue="Загрузите изображение"
+        />
         <Input
           label="Заголовок"
           name="title"
@@ -354,7 +412,7 @@ class AddBookForm extends React.Component<Props, State> {
           onBlur={() => this.validateInput('title', 'letters', { max: 30 }, true)}
           onFocus={() => this.handleFocus('title')}
           onChange={this.handleChange('title')}
-          isValid={this.state.fieldsValid.title}
+          isValid={this.state.isFieldsValid.title}
           clue="Не больше 30 символов"
         />
         {this.renderAuthors()}
@@ -366,7 +424,7 @@ class AddBookForm extends React.Component<Props, State> {
           onBlur={() => this.validateInput('pages', 'number', { max: 10000 }, true)}
           onFocus={() => this.handleFocus('pages')}
           onChange={this.handleChange('pages')}
-          isValid={this.state.fieldsValid.pages}
+          isValid={this.state.isFieldsValid.pages}
           clue="Не больше 10 000"
         />
         <Input
@@ -376,7 +434,7 @@ class AddBookForm extends React.Component<Props, State> {
           onBlur={() => this.validateInput('publisher', 'letters', { max: 30 })}
           onFocus={() => this.handleFocus('publisher')}
           onChange={this.handleChange('publisher')}
-          isValid={this.state.fieldsValid.publisher}
+          isValid={this.state.isFieldsValid.publisher}
           clue="Не больше 30 символов"
         />
         <Input
@@ -386,7 +444,7 @@ class AddBookForm extends React.Component<Props, State> {
           onBlur={() => this.validateInput('publicationYear', 'number', { min: 1800 })}
           onFocus={() => this.handleFocus('publicationYear')}
           onChange={this.handleChange('publicationYear')}
-          isValid={this.state.fieldsValid.publicationYear}
+          isValid={this.state.isFieldsValid.publicationYear}
           clue="Формат ГГГГ, не раньше 1800"
         />
         <Input
@@ -398,7 +456,7 @@ class AddBookForm extends React.Component<Props, State> {
           }
           onFocus={() => this.handleFocus('editionDate')}
           onChange={this.handleChange('editionDate')}
-          isValid={this.state.fieldsValid.editionDate}
+          isValid={this.state.isFieldsValid.editionDate}
           clue="Формат ДД.ММ.ГГГГ, не раньше 01.01.1800"
         />
         <Input
@@ -410,7 +468,7 @@ class AddBookForm extends React.Component<Props, State> {
           }
           onFocus={() => this.handleFocus('ISBN')}
           onChange={this.handleChange('ISBN')}
-          isValid={this.state.fieldsValid.ISBN}
+          isValid={this.state.isFieldsValid.ISBN}
           clue="????"
         />
 
@@ -420,7 +478,7 @@ class AddBookForm extends React.Component<Props, State> {
             title="Добавить"
             type="primary"
             htmlType="submit"
-            disabled={this.state.isFormValid !== null && !this.state.isFormValid}
+            // disabled={!this.state.isFormValid}
           />
         </div>
       </form>
@@ -433,5 +491,6 @@ export default connect(
   {
     addBook,
     updateBook,
+    uploadImage,
   },
 )(AddBookForm);

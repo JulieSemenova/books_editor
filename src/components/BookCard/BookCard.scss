@@ -20,6 +20,10 @@
     box-shadow: 0 2px 8px rgba($c_main, 0.09);
   }
 
+  &_aboutBook {
+    overflow-y: scroll;
+  }
+
   &_title {
     color: $c_primary;
   }
@@ -35,16 +39,17 @@
   }
 
   &_imgContainer {
-    width: 60px;
     height: 120px;
   }
   &_img {
     object-fit: contain;
+    height: 120px;
   }
 
   &_buttons {
     display: flex;
     justify-content: space-between;
     margin-top: auto;
+    padding-top: 10px;
   }
 }

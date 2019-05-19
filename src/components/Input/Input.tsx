@@ -10,12 +10,13 @@ interface Props {
   onChange: React.ChangeEventHandler<any>;
   onBlur: () => void;
   onFocus: () => void;
-  value: string | undefined;
+  value?: string | undefined;
   name: string;
   label?: string;
   required?: boolean;
   clue?: string;
-  isValid: boolean | null;
+  isValid?: boolean | null;
+  type?: string;
 }
 
 class Input extends React.PureComponent<Props, State> {
@@ -38,10 +39,10 @@ class Input extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { value, label, name, clue, required, isValid } = this.props;
+    const { value, label, name, clue, required, isValid, type } = this.props;
 
     let className = 'input';
-    if (isValid !== null) {
+    if (isValid !== undefined && isValid !== null) {
       className += `${isValid ? '' : ' input_error'}`;
     }
 
@@ -57,6 +58,7 @@ class Input extends React.PureComponent<Props, State> {
           onChange={this.handleChange}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
+          type={type}
         />
         {clue && <span className="input_comment">{clue}</span>}
       </div>

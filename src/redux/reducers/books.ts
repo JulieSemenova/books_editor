@@ -3,6 +3,7 @@ import { Books, Action } from '../../types';
 export const ADD: string = 'books/ADD';
 export const DELETE: string = 'books/DELETE';
 export const UPDATE: string = 'books/UPDATE';
+export const UPLOAD_IMAGE: string = 'books/UPLOAD_IMAGE';
 
 export const initialState: Books.State = {
   books: [
@@ -15,7 +16,8 @@ export const initialState: Books.State = {
       publicationYear: '1900',
       editionDate: '01.01.1900',
       ISBN: 'ISBN',
-      img: 'any',
+      img:
+        'https://res.cloudinary.com/graphql-advanced/image/upload/v1558264087/sickfits/czqingssjkuxiyqluupl.jpg',
     },
     {
       id: 'id1',
@@ -26,7 +28,7 @@ export const initialState: Books.State = {
       publicationYear: '1800',
       editionDate: '01.01.1999',
       ISBN: 'ISBN',
-      img: 'any',
+      img: '',
     },
   ],
 };
@@ -69,6 +71,22 @@ export default function reducer(
         books: newBookList,
       };
     }
+
+    case UPLOAD_IMAGE: {
+      const updatedBookId = action.data.id;
+      const uploadedImageUrl = action.data.image;
+      const newBookList = state.books.slice().map((book: Books.Book) => {
+        if (book.id === updatedBookId) {
+          return { ...book, img: uploadedImageUrl };
+        }
+        return book;
+      });
+
+      return {
+        ...state,
+        books: newBookList,
+      };
+    }
     default:
       return state;
   }
@@ -92,5 +110,12 @@ export const updateBook: Books.AC_UpdateBook = (id: string, book: Books.Book) =>
   return {
     data: { id, book },
     type: UPDATE,
+  };
+};
+
+export const uploadImage: Books.AC_UploadImage = (id: string, image: string) => {
+  return {
+    data: { id, image },
+    type: UPLOAD_IMAGE,
   };
 };
