@@ -37,10 +37,11 @@ export default function reducer(
 ): Books.State {
   switch (action.type) {
     case ADD: {
-      const addedBook = action.data;
+      const newBookList = state.books.slice().concat(action.data);
+
       return {
         ...state,
-        books: state.books.concat(addedBook),
+        books: newBookList,
       };
     }
     case DELETE: {
