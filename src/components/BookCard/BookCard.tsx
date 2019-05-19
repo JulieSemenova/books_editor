@@ -8,7 +8,7 @@ import { deleteBook } from '../../redux/reducers/books';
 
 import './BookCard.css';
 import Popup from '../Popup/Popup';
-import UpdateBookForm from '../UpdateBookForm/UpdateBookForm';
+import AddBookForm from '../AddBookForm/AddBookForm';
 
 interface Props extends RouteComponentProps {
   book: Books.Book;
@@ -108,7 +108,7 @@ class BookCard extends React.Component<Props, State> {
           onClick={this.toggleModal}
           isVisible={this.state.isUpdateModalOpen}
         >
-          <UpdateBookForm book={this.props.book} />
+          <AddBookForm onClick={this.toggleModal} book={this.props.book} />
         </Popup>
       </article>
     );

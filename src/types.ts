@@ -45,5 +45,5 @@ export namespace Books {
 
   export type AC_AddBook = (data: Book) => Action;
   export type AC_DeleteBook = (data: Book['id']) => Action;
-  export type AC_UpdateBook = (data: { id: Book['id']; book: Book }) => Action;
+  export type AC_UpdateBook = (id: Book['id'], book: Book) => Action;
 }
