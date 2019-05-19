@@ -6,7 +6,7 @@ import { Books, Author } from '../../types';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { fullYearValudate } from '../../constants';
-import { addBook } from '../../redux/reducers/books';
+import { addBook, updateBook } from '../../redux/reducers/books';
 
 import './AddBookForm.css';
 
@@ -26,24 +26,33 @@ interface State {
 interface Props {
   onClick: () => void;
   addBook: Books.AC_AddBook;
+  updateBook: Books.AC_UpdateBook;
+  book?: Books.Book;
 }
 
 class AddBookForm extends React.Component<Props, State> {
   readonly state: State = {
     fields: {
-      title: '',
-      pages: '',
-      publisher: '',
-      publicationYear: '',
-      editionDate: '',
-      ISBN: '',
+      title: this.props.book ? this.props.book.title : '',
+      pages: this.props.book ? this.props.book.pages : '',
+      publisher:
+        this.props.book && this.props.book.publisher ? this.props.book.publisher : '',
+      publicationYear:
+        this.props.book && this.props.book.publicationYear
+          ? this.props.book.publicationYear
+          : '',
+      editionDate:
+        this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
+      ISBN: this.props.book && this.props.book.ISBN ? this.props.book.ISBN : '',
     },
-    authors: [
-      {
-        name: '',
-        surname: '',
-      },
-    ],
+    authors: this.props.book
+      ? this.props.book.authors
+      : [
+          {
+            name: '',
+            surname: '',
+          },
+        ],
     isAuthorsValid: [{ name: null, surname: null }],
     fieldsValid: {
       title: null,
@@ -82,10 +91,13 @@ class AddBookForm extends React.Component<Props, State> {
       }
     });
 
-    this.setState({
-      ...this.state,
-      authors: authorsNew,
-    });
+    this.setState(
+      {
+        ...this.state,
+        authors: authorsNew,
+      },
+      () => this.validateForm(),
+    );
   };
 
   private handleFocus = (key: string) => {
@@ -93,7 +105,7 @@ class AddBookForm extends React.Component<Props, State> {
       ...this.state,
       fieldsValid: {
         ...this.state.fieldsValid,
-        [key]: null,
+        [key]: true,
       },
       isFormValid: false,
     });
@@ -103,7 +115,7 @@ class AddBookForm extends React.Component<Props, State> {
     const newAuthor = this.state.isAuthorsValid.slice();
     newAuthor.map((author: any, index: number) => {
       if (index === elemIndex) {
-        author[key] = null;
+        author[key] = true;
       }
     });
 
@@ -189,12 +201,13 @@ class AddBookForm extends React.Component<Props, State> {
       }
     });
 
-    this.setState({
-      ...this.state,
-      isAuthorsValid: newValidArray,
-    });
-
-    this.validateForm();
+    this.setState(
+      {
+        ...this.state,
+        isAuthorsValid: newValidArray,
+      },
+      () => this.validateForm(),
+    );
   };
 
   validateForm = () => {
@@ -231,12 +244,18 @@ class AddBookForm extends React.Component<Props, State> {
       surname: null,
     };
 
-    this.setState({
-      ...this.state,
-      authors: this.state.authors.concat(author),
-      isAuthorsValid: this.state.isAuthorsValid.concat(authorValid),
-      isFormValid: false,
-    });
+    const newAuthors = this.state.authors.slice();
+    const newAuthorsValidity = this.state.isAuthorsValid.slice();
+
+    this.setState(
+      {
+        ...this.state,
+        authors: newAuthors.concat(author),
+        isAuthorsValid: newAuthorsValidity.concat(authorValid),
+        isFormValid: false,
+      },
+      () => this.validateForm(),
+    );
   };
 
   private removeAuthor = (elemIndex: number, e: any) => {
@@ -307,9 +326,11 @@ class AddBookForm extends React.Component<Props, State> {
     const bookInfo = {
       ...fields,
       authors,
-      id: v4(),
+      id: this.props.book ? this.props.book.id : v4(),
     };
-    this.props.addBook(bookInfo as Books.Book);
+    this.props.book
+      ? this.props.updateBook(this.props.book.id, bookInfo as Books.Book)
+      : this.props.addBook(bookInfo as Books.Book);
     this.props.onClick();
   };
 
@@ -411,5 +432,6 @@ export default connect(
   null,
   {
     addBook,
+    updateBook,
   },
 )(AddBookForm);

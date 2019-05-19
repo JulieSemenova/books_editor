@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 300px;
+  height: $card_height;
   width: $card_width;
   padding: $d_xnormal;
   border: 1px solid;
@@ -18,6 +18,20 @@
   &:hover {
     border-color: rgba($c_main, 0.09);
     box-shadow: 0 2px 8px rgba($c_main, 0.09);
+  }
+
+  &_title {
+    color: $c_primary;
+  }
+
+  &_info {
+    font-size: $fs_normal;
+    color: rgba($c_main, 0.8);
+  }
+
+  &_infoValue {
+    font-size: $fs_normal;
+    font-weight: $fw_bold;
   }
 
   &_imgContainer {

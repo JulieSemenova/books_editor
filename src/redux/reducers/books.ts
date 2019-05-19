@@ -54,11 +54,13 @@ export default function reducer(
     }
     case UPDATE: {
       const updatedBook = action.data.book;
-      const newBookList = state.books.slice();
-      newBookList.map((book: Books.Book) => {
-        if (book.id === action.data.id) {
-          newBookList[action.data.id] = updatedBook;
+      const updatedBookId = action.data.id;
+
+      const newBookList = state.books.slice().map((book: Books.Book) => {
+        if (book.id === updatedBookId) {
+          return updatedBook;
         }
+        return book;
       });
 
       return {
@@ -85,12 +87,9 @@ export const deleteBook: Books.AC_DeleteBook = (data: Books.Book['id']) => {
   };
 };
 
-export const updateBook: Books.AC_UpdateBook = (data: {
-  id: string;
-  book: Books.Book;
-}) => {
+export const updateBook: Books.AC_UpdateBook = (id: string, book: Books.Book) => {
   return {
-    data,
+    data: { id, book },
     type: UPDATE,
   };
 };

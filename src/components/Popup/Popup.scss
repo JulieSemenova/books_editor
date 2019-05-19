@@ -1,6 +1,11 @@
 @import '../../styles/vars.scss';
 
 .popup {
+  display: block;
+  &--closed {
+    display: none;
+  }
+
   &_container {
     z-index: 120;
     position: fixed;
@@ -25,10 +30,15 @@
     top: 0;
     left: -200%;
     z-index: 110;
+    display: block;
     width: 350%;
     height: 100%;
     overflow: hidden;
     background-color: rgba($c_secondary, 0.9);
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &_closeBtn {
