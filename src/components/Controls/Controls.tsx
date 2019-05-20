@@ -3,10 +3,9 @@ import * as React from 'react';
 import Button from '../Button/Button';
 import Filters from '../Filters/Filters';
 import Popup from '../Popup/Popup';
-import AddBookForm from '../AddBookForm/AddBookForm';
+import EditBookForm from '../EditBookForm/EditBookForm';
 
 import './Controls.css';
-import EditBookForm from '../EditBookForm/EditBookForm';
 
 interface State {
   isModalOpen: boolean;

@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { v4 } from 'node-uuid';
+import { connect } from 'react-redux';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { Books } from '../../types';
 import { fullYearValidate } from '../../constants';
+import { addBook, updateBook, uploadImage } from '../../redux/reducers/books';
+
+import './EditBookForm.css';
 
 type Author = {
   name: FormSimpleInput;
@@ -26,7 +30,13 @@ type FormSimpleInput = {
   clue?: string;
 };
 interface Props {
-  onClick?: () => void;
+  onClick: () => void;
+  addBook: Books.AC_AddBook;
+  updateBook: Books.AC_UpdateBook;
+  uploadImage: Books.AC_UploadImage;
+  book?: Books.Book;
+  okText?: string;
+  cancelText?: string;
 }
 interface State {
   fields: {
@@ -46,8 +56,8 @@ class EditBookForm extends React.Component<Props, State> {
   state: State = {
     fields: {
       title: {
-        value: '',
-        isValid: null,
+        value: this.props.book ? this.props.book.title : '',
+        isValid: this.props.book ? true : null,
         label: 'Заголовок',
         clue: 'Не больше 30 символов',
         validateRules: {
@@ -57,8 +67,8 @@ class EditBookForm extends React.Component<Props, State> {
         required: true,
       },
       pages: {
-        value: '',
-        isValid: null,
+        value: this.props.book ? this.props.book.pages : '',
+        isValid: this.props.book ? true : null,
         required: true,
         label: 'Кол-во страниц',
         clue: 'Не больше 10 000',
@@ -68,7 +78,7 @@ class EditBookForm extends React.Component<Props, State> {
         },
       },
       publisher: {
-        value: '',
+        value: this.props.book && this.props.book.publisher ? this.props.book.publisher : '',
         isValid: null,
         required: false,
         label: 'Издательство',
@@ -79,7 +89,8 @@ class EditBookForm extends React.Component<Props, State> {
         },
       },
       publicationYear: {
-        value: '',
+        value:
+          this.props.book && this.props.book.publicationYear ? this.props.book.publicationYear : '',
         isValid: null,
         required: false,
         label: 'Год публикации',
@@ -90,7 +101,7 @@ class EditBookForm extends React.Component<Props, State> {
         },
       },
       editionDate: {
-        value: '',
+        value: this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
         isValid: null,
         required: false,
         label: 'Дата выхода в тираж',
@@ -101,7 +112,7 @@ class EditBookForm extends React.Component<Props, State> {
         },
       },
       ISBN: {
-        value: '',
+        value: this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
         isValid: null,
         required: false,
         label: 'ISBN',
@@ -109,48 +120,75 @@ class EditBookForm extends React.Component<Props, State> {
           type: 'regexp',
         },
       },
-      authors: [
-        {
-          name: {
-            value: '',
-            isValid: null,
-            required: true,
-            label: 'Имя',
-            validateRules: {
-              type: 'letters',
-              max: 20,
+      authors: this.props.book
+        ? this.props.book.authors.reduce((authorsPrev: any[], author: Books.Author) => {
+            const authorItem = {
+              name: {
+                value: author.name,
+                isValid: true,
+                required: true,
+                label: 'Имя',
+                validateRules: {
+                  type: 'letters',
+                  max: 20,
+                },
+              },
+              surname: {
+                value: author.surname,
+                isValid: true,
+                required: true,
+                label: 'Фамилия',
+                validateRules: {
+                  type: 'letters',
+                  max: 20,
+                },
+              },
+            };
+            return [...authorsPrev, authorItem];
+          }, [])
+        : [
+            {
+              name: {
+                value: '',
+                isValid: null,
+                required: true,
+                label: 'Имя',
+                validateRules: {
+                  type: 'letters',
+                  max: 20,
+                },
+              },
+              surname: {
+                value: '',
+                isValid: null,
+                required: true,
+                label: 'Фамилия',
+                validateRules: {
+                  type: 'letters',
+                  max: 20,
+                },
+              },
             },
-          },
-          surname: {
-            value: '',
-            isValid: null,
-            required: true,
-            label: 'Фамилия',
-            validateRules: {
-              type: 'letters',
-              max: 20,
-            },
-          },
-        },
-      ],
+          ],
     },
-    img: '',
+    img: this.props.book ? this.props.book.img : '',
     isFormValid: true,
   };
 
-  handleChange = (key: keyof State['fields']) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    this.setState({
-      ...this.state,
-      fields: {
-        ...this.state.fields,
-        [key]: {
-          ...this.state.fields[key],
-          value: event.target.value,
+  handleChange = (key: keyof State['fields']) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(
+      {
+        ...this.state,
+        fields: {
+          ...this.state.fields,
+          [key]: {
+            ...this.state.fields[key],
+            value: event.target.value,
+          },
         },
       },
-    });
+      () => this.validateInput(key),
+    );
   };
 
   private handleChangeAuthor = (key: keyof Author, elemIndex: number) => (
@@ -164,13 +202,16 @@ class EditBookForm extends React.Component<Props, State> {
       return author;
     });
 
-    this.setState({
-      ...this.state,
-      fields: {
-        ...this.state.fields,
-        authors: newAuthorArray,
+    this.setState(
+      {
+        ...this.state,
+        fields: {
+          ...this.state.fields,
+          authors: newAuthorArray,
+        },
       },
-    });
+      () => this.validateAuthor(key, elemIndex),
+    );
   };
 
   private removeAuthor = (elemIndex: number, e: any) => {
@@ -253,11 +294,7 @@ class EditBookForm extends React.Component<Props, State> {
                 clue="Не больше 20 символов"
               />
               {authors.length > 1 && (
-                <Button
-                  size="small"
-                  title="🗑️"
-                  onClick={e => this.removeAuthor(index, e)}
-                />
+                <Button size="small" title="🗑️" onClick={e => this.removeAuthor(index, e)} />
               )}
             </div>
           );
@@ -266,15 +303,13 @@ class EditBookForm extends React.Component<Props, State> {
     );
   };
 
-  validateInput = (
-    key: string,
-    value: string,
-    validateRules: ValidateRules,
-    required: boolean,
-  ) => {
+  validateInput = (key: keyof State['fields']) => {
+    const input = this.state.fields[key] as FormSimpleInput;
+    const value = input.value;
+    const { min, max, pattern, type } = input.validateRules;
+
     let isValid = true;
-    const { min, max, pattern, type } = validateRules;
-    if (required && (!value || value === '')) {
+    if (input.required && (!value || value === '')) {
       isValid = false;
     } else {
       if (type === 'letters' && value !== '') {
@@ -352,21 +387,104 @@ class EditBookForm extends React.Component<Props, State> {
     const simpleInputsKeys = Object.keys(fields).filter(
       key => key !== 'authors',
     ) as (keyof State['fields'])[];
-    return true;
-    // const simpleFieldsValid = simpleInputsKeys.every((key: keyof State['fields']) => (fields[key]).isValid)
+
+    const authorsValidity = fields.authors.every((author: Author) => {
+      const validName = author.name.isValid;
+      const validSurname = author.surname.isValid;
+
+      return validName === true && validSurname === true;
+    });
+
+    const simpleFieldsValid = simpleInputsKeys.every((key: keyof State['fields']) => {
+      const field = fields[key] as FormSimpleInput;
+      if (!field.required && field.isValid !== null) {
+        return field.isValid;
+      }
+      if (field.required) {
+        if (field.isValid === null) {
+          return false;
+        }
+        if (field.isValid !== null) {
+          return field.isValid;
+        }
+      }
+
+      return true;
+    });
+
+    return simpleFieldsValid && authorsValidity;
   };
 
-  handleSubmitForm = () => {};
+  handleUploadImage = async (e: any) => {
+    const files = e.target.files;
+    const data = new FormData();
+    data.append('file', files[0]);
+    data.append('upload_preset', 'sickfits');
+
+    const res = await fetch('https://api.cloudinary.com/v1_1/graphql-advanced/image/upload', {
+      method: 'POST',
+      body: data,
+    });
+
+    const file = await res.json();
+    this.setState(
+      {
+        img: file.secure_url,
+      },
+      () => (this.props.book ? this.props.uploadImage(this.props.book.id, file.secure_url) : ''),
+    );
+  };
+
+  handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { fields, img } = this.state;
+
+    const authors = fields.authors.reduce((authorsPrev: Books.Author[], author: Author) => {
+      const authorItem = {
+        name: author.name.value,
+        surname: author.surname.value,
+      };
+      return [...authorsPrev, authorItem];
+    }, []);
+
+    const bookInfo = {
+      id: this.props.book ? this.props.book.id : v4(),
+      title: fields.title.value,
+      pages: fields.pages.value,
+      publisher: fields.publisher.value,
+      publicationYear: fields.publicationYear.value,
+      editionDate: fields.editionDate.value,
+      ISBN: fields.ISBN.value,
+      img,
+      authors,
+    };
+
+    this.props.book
+      ? this.props.updateBook(this.props.book.id, bookInfo as Books.Book)
+      : this.props.addBook(bookInfo as Books.Book);
+    this.props.onClick();
+  };
 
   render() {
-    const { fields } = this.state;
-    const simpleFields = Object.keys(fields).filter(
-      key => key !== 'title' && key !== 'authors',
-    );
+    const { fields, img } = this.state;
+    const { okText, cancelText } = this.props;
+
+    const simpleFields = Object.keys(fields).filter(key => key !== 'title' && key !== 'authors');
     const titleItem = fields.title;
 
     return (
       <form onSubmit={this.handleSubmitForm}>
+        {img && <img width="150" src={img} alt="Превью обложки" />}
+        <Input
+          label="Обложка"
+          name="img"
+          value={''}
+          onBlur={() => {}}
+          onFocus={() => {}}
+          onChange={this.handleUploadImage}
+          type="file"
+          clue="Загрузите изображение"
+        />
         <Input
           label={titleItem.label}
           name={'title'}
@@ -374,14 +492,7 @@ class EditBookForm extends React.Component<Props, State> {
           required={titleItem.required}
           isValid={titleItem.isValid}
           onChange={this.handleChange('title')}
-          onBlur={() =>
-            this.validateInput(
-              'title',
-              titleItem.value,
-              titleItem.validateRules,
-              titleItem.required,
-            )
-          }
+          onBlur={() => this.validateInput('title')}
           clue={titleItem.clue}
         />
         {this.renderAuthors()}
@@ -396,22 +507,15 @@ class EditBookForm extends React.Component<Props, State> {
               required={formItem.required}
               isValid={formItem.isValid}
               onChange={this.handleChange(key)}
-              onBlur={() =>
-                this.validateInput(
-                  key,
-                  formItem.value,
-                  formItem.validateRules,
-                  formItem.required,
-                )
-              }
+              onBlur={() => this.validateInput(key)}
               clue={formItem.clue}
             />
           );
         })}
         <div className="form_buttons">
-          <Button title="Отмена" onClick={this.props.onClick} />
+          <Button title={cancelText || 'Отмена'} onClick={this.props.onClick} />
           <Button
-            title="Добавить"
+            title={cancelText || 'Подтвердить'}
             type="primary"
             htmlType="submit"
             disabled={!this.checkFormValidation()}
@@ -422,4 +526,11 @@ class EditBookForm extends React.Component<Props, State> {
   }
 }
 
-export default EditBookForm;
+export default connect(
+  null,
+  {
+    addBook,
+    updateBook,
+    uploadImage,
+  },
+)(EditBookForm);

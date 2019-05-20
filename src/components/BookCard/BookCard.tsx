@@ -2,13 +2,13 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Author, Books } from '../../types';
+import { Books } from '../../types';
 import Button from '../Button/Button';
 import { deleteBook } from '../../redux/reducers/books';
 
 import './BookCard.css';
 import Popup from '../Popup/Popup';
-import AddBookForm from '../AddBookForm/AddBookForm';
+import EditBookForm from '../EditBookForm/EditBookForm';
 
 interface Props extends RouteComponentProps {
   book: Books.Book;
@@ -69,7 +69,7 @@ class BookCard extends React.Component<Props, State> {
         <div className="bookCard_aboutBook">
           <div className="bookCard_info">
             Авторы:{' '}
-            {authors.map((author: Author) => (
+            {authors.map((author: Books.Author) => (
               <span className="bookCard_infoValue" key={author.name}>
                 {author.surname} {author.name}
                 {authors.length > 1 ? ',' : null}
@@ -80,14 +80,11 @@ class BookCard extends React.Component<Props, State> {
             Количество страниц: <span className="bookCard_infoValue">{pages}</span>
           </div>
           <div className="bookCard_info">
-            Издательство:{' '}
-            <span className="bookCard_infoValue">{publisher ? publisher : '-'}</span>
+            Издательство: <span className="bookCard_infoValue">{publisher ? publisher : '-'}</span>
           </div>
           <div className="bookCard_info">
             Год публикации:{' '}
-            <span className="bookCard_infoValue">
-              {publicationYear ? publicationYear : '-'}
-            </span>
+            <span className="bookCard_infoValue">{publicationYear ? publicationYear : '-'}</span>
           </div>
           <div className="bookCard_info">
             Дата выхода в тираж:{' '}
@@ -110,7 +107,7 @@ class BookCard extends React.Component<Props, State> {
           onClick={this.toggleModal}
           isVisible={this.state.isUpdateModalOpen}
         >
-          <AddBookForm onClick={this.toggleModal} book={this.props.book} />
+          <EditBookForm onClick={this.toggleModal} book={this.props.book} />
         </Popup>
       </article>
     );

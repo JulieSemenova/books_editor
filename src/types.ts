@@ -1,8 +1,3 @@
-export type Author = {
-  name: string;
-  surname: string;
-};
-
 export interface ReduxState {
   filters: Filters.State;
   books: Books.State;
@@ -41,6 +36,11 @@ export namespace Books {
     editionDate?: string;
     ISBN?: string;
     img?: any;
+  };
+
+  export type Author = {
+    name: string;
+    surname: string;
   };
 
   export type AC_AddBook = (data: Book) => Action;
