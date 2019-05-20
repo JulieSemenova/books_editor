@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { Books } from '../../types';
-import { fullYearValidate } from '../../constants';
+import { fullYearValidate, ISBNValudate } from '../../constants';
 import { addBook, updateBook, uploadImage } from '../../redux/reducers/books';
 
 import './EditBookForm.css';
@@ -118,6 +118,7 @@ class EditBookForm extends React.Component<Props, State> {
         label: 'ISBN',
         validateRules: {
           type: 'regexp',
+          pattern: ISBNValudate,
         },
       },
       authors: this.props.book
