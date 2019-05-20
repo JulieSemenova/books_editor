@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { Books } from '../../types';
 import Button from '../Button/Button';
 import { deleteBook } from '../../redux/reducers/books';
-
-import './BookCard.css';
 import Popup from '../Popup/Popup';
 import EditBookForm from '../EditBookForm/EditBookForm';
+
+import './BookCard.css';
 
 interface Props extends RouteComponentProps {
   book: Books.Book;
@@ -22,10 +22,6 @@ interface State {
 class BookCard extends React.Component<Props, State> {
   readonly state: State = {
     isUpdateModalOpen: false,
-  };
-
-  handleGoTo = () => {
-    this.props.history.push(`/${this.props.book.id}`);
   };
 
   handleDeleteBook = (e: React.MouseEvent<HTMLElement>) => {
@@ -51,10 +47,7 @@ class BookCard extends React.Component<Props, State> {
       ISBN,
     } = this.props.book;
     return (
-      <article
-        className="bookCard"
-        // onClick={this.handleGoTo}
-      >
+      <article className="bookCard">
         <div className="bookCard_imgContainer">
           {img ? (
             <img alt={`${title}`} className="bookCard_img" width="190" src={img} />

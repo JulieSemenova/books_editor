@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import CatalogPage from '../src/pages/CatalogPage/CatalogPage';
-import BookPage from '../src/pages/BookPage/BookPage';
+// import BookPage from '../src/pages/BookPage/BookPage';
 
 import store from './redux/store';
 import './styles/index.css';
@@ -16,7 +16,6 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={CatalogPage} />
-        <Route path="/:id" component={BookPage} />
       </Switch>
     </BrowserRouter>
   </Provider>,
