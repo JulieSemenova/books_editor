@@ -5,7 +5,14 @@
     &--author {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
     }
+  }
+
+  &_buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: $d_normal;
   }
 }

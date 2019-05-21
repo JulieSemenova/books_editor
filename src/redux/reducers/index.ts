@@ -1,7 +1,11 @@
 import { combineReducers } from 'redux';
 
-import testReducer from './testReducer';
+import filters from './filters';
+import books from './books';
 
-export default combineReducers({
-  testReducer,
+import { ReduxState } from '../../types';
+
+export default combineReducers<ReduxState>({
+  filters,
+  books,
 });

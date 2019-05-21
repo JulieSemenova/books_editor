@@ -4,16 +4,17 @@
   display: block;
   height: $d_xnormal;
   padding: 0 $d_tiny;
-  border: 2px rgba($c_main, 0.3) solid;
+  border-radius: $d_tiny;
+  border: 2px $c_secondary solid;
   font-size: $fs_normal;
   cursor: pointer;
 
   &:focus {
-    border-color: $c_info;
-    outline: none;
+    border-color: $c_primary;
+    box-shadow: 0 0 0 2px rgba($c_primary, 0.2);
   }
   &:hover {
-    border-color: rgba($c_main, 0.5);
+    border-color: $c_primary;
   }
 
   &_container {
@@ -26,5 +27,14 @@
   &_label {
     display: block;
     margin-top: $d_tiny;
+  }
+
+  &_comment {
+    color: rgba($c_main, 0.5);
+    font-size: $fs_tiny;
+  }
+
+  &_requiredSign {
+    color: $c_warn;
   }
 }

@@ -1,0 +1,62 @@
+@import '../../styles/vars.scss';
+
+.popup {
+  display: block;
+  &--closed {
+    display: none;
+  }
+
+  &_container {
+    z-index: 120;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    max-height: 100vh;
+    min-width: 350px;
+    padding: $d_xnormal;
+    transform: translate(-50%, -50%);
+    overflow: scroll;
+    background-color: #ffffff;
+    border-radius: $d_tiny;
+  }
+
+  &_title {
+    font-size: $fs_medium;
+    margin-bottom: $d_normal;
+  }
+
+  &_overlay {
+    position: fixed;
+    top: 0;
+    left: -200%;
+    z-index: 110;
+    display: block;
+    width: 350%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba($c_secondary, 0.9);
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+  &_closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: solid 1px $c_contrast;
+    cursor: pointer;
+    opacity: 0.8;
+    text-align: center;
+    padding: 8px;
+    &:hover,
+    &:active {
+      opacity: 1;
+    }
+  }
+}

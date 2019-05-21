@@ -5,9 +5,11 @@ interface Props {
   className?: string;
   title?: string;
   children?: React.ReactNode;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   size?: 'small' | 'default';
+  type?: 'primary' | 'default';
+  htmlType?: 'submit' | 'button' | 'reset';
 }
 
 const Button: React.StatelessComponent<Props> = ({
@@ -17,6 +19,8 @@ const Button: React.StatelessComponent<Props> = ({
   className,
   disabled,
   size,
+  type,
+  htmlType,
 }: Props): JSX.Element => {
   const combinedClassName = ['button'];
 
@@ -27,12 +31,17 @@ const Button: React.StatelessComponent<Props> = ({
     combinedClassName.push(`button--${size}`);
   }
 
+  if (type && type !== 'default') {
+    combinedClassName.push(`button--${type}`);
+  }
+
   return (
     <>
       <button
         className={combinedClassName.join(' ')}
         onClick={!disabled ? onClick : () => {}}
         disabled={disabled}
+        type={htmlType}
       >
         {children || title || null}
       </button>
