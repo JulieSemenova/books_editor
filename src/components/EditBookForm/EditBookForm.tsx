@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { Books } from '../../types';
-import { fullYearValidate, ISBNValudate } from '../../constants';
+import { fullYearValidate, ISBNValudate, yearValidate } from '../../constants';
 import { addBook, updateBook, uploadImage } from '../../redux/reducers/books';
 
 import './EditBookForm.css';
@@ -74,11 +74,13 @@ class EditBookForm extends React.Component<Props, State> {
         clue: 'Не больше 10 000',
         validateRules: {
           type: 'numbers',
+          min: 1,
           max: 10000,
         },
       },
       publisher: {
-        value: this.props.book && this.props.book.publisher ? this.props.book.publisher : '',
+        value:
+          this.props.book && this.props.book.publisher ? this.props.book.publisher : '',
         isValid: null,
         required: false,
         label: 'Издательство',
@@ -90,18 +92,23 @@ class EditBookForm extends React.Component<Props, State> {
       },
       publicationYear: {
         value:
-          this.props.book && this.props.book.publicationYear ? this.props.book.publicationYear : '',
+          this.props.book && this.props.book.publicationYear
+            ? this.props.book.publicationYear
+            : '',
         isValid: null,
         required: false,
         label: 'Год публикации',
         clue: 'Не раньше 1800',
         validateRules: {
-          type: 'numbers',
-          min: 1800,
+          type: 'regexp',
+          pattern: yearValidate,
         },
       },
       editionDate: {
-        value: this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
+        value:
+          this.props.book && this.props.book.editionDate
+            ? this.props.book.editionDate
+            : '',
         isValid: null,
         required: false,
         label: 'Дата выхода в тираж',
@@ -112,7 +119,10 @@ class EditBookForm extends React.Component<Props, State> {
         },
       },
       ISBN: {
-        value: this.props.book && this.props.book.editionDate ? this.props.book.editionDate : '',
+        value:
+          this.props.book && this.props.book.editionDate
+            ? this.props.book.editionDate
+            : '',
         isValid: null,
         required: false,
         label: 'ISBN',
@@ -176,7 +186,9 @@ class EditBookForm extends React.Component<Props, State> {
     isFormValid: true,
   };
 
-  handleChange = (key: keyof State['fields']) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleChange = (key: keyof State['fields']) => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     this.setState(
       {
         ...this.state,
@@ -295,7 +307,11 @@ class EditBookForm extends React.Component<Props, State> {
                 clue="Не больше 20 символов"
               />
               {authors.length > 1 && (
-                <Button size="small" title="🗑️" onClick={e => this.removeAuthor(index, e)} />
+                <Button
+                  size="small"
+                  title="🗑️"
+                  onClick={e => this.removeAuthor(index, e)}
+                />
               )}
             </div>
           );
@@ -422,17 +438,23 @@ class EditBookForm extends React.Component<Props, State> {
     data.append('file', files[0]);
     data.append('upload_preset', 'sickfits');
 
-    const res = await fetch('https://api.cloudinary.com/v1_1/graphql-advanced/image/upload', {
-      method: 'POST',
-      body: data,
-    });
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/graphql-advanced/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      },
+    );
 
     const file = await res.json();
     this.setState(
       {
         img: file.secure_url,
       },
-      () => (this.props.book ? this.props.uploadImage(this.props.book.id, file.secure_url) : ''),
+      () =>
+        this.props.book
+          ? this.props.uploadImage(this.props.book.id, file.secure_url)
+          : '',
     );
   };
 
@@ -440,13 +462,16 @@ class EditBookForm extends React.Component<Props, State> {
     e.preventDefault();
     const { fields, img } = this.state;
 
-    const authors = fields.authors.reduce((authorsPrev: Books.Author[], author: Author) => {
-      const authorItem = {
-        name: author.name.value,
-        surname: author.surname.value,
-      };
-      return [...authorsPrev, authorItem];
-    }, []);
+    const authors = fields.authors.reduce(
+      (authorsPrev: Books.Author[], author: Author) => {
+        const authorItem = {
+          name: author.name.value,
+          surname: author.surname.value,
+        };
+        return [...authorsPrev, authorItem];
+      },
+      [],
+    );
 
     const bookInfo = {
       id: this.props.book ? this.props.book.id : v4(),
@@ -470,7 +495,9 @@ class EditBookForm extends React.Component<Props, State> {
     const { fields, img } = this.state;
     const { okText, cancelText } = this.props;
 
-    const simpleFields = Object.keys(fields).filter(key => key !== 'title' && key !== 'authors');
+    const simpleFields = Object.keys(fields).filter(
+      key => key !== 'title' && key !== 'authors',
+    );
     const titleItem = fields.title;
 
     return (
